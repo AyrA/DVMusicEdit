@@ -42,17 +42,50 @@ namespace DVMusicEdit
             }
         }
 
-        public static string[] DownloadLinks
+        public static DownloadTask[] DownloadLinks
         {
             get
             {
-                return new string[]
+                return new DownloadTask[]
                 {
-                    "https://master.ayra.ch/LOGIN/pub/Applications/Tools/ffmpeg/ffmpeg.exe",
-                    "https://master.ayra.ch/LOGIN/pub/Applications/Tools/ffmpeg/ffplay.exe",
-                    "https://master.ayra.ch/LOGIN/pub/Applications/Tools/ffmpeg/ffprobe.exe"
+                    new DownloadTask("https://master.ayra.ch/LOGIN/pub/Applications/Tools/ffmpeg/ffmpeg.exe", ConverterPath),
+                    new DownloadTask("https://master.ayra.ch/LOGIN/pub/Applications/Tools/ffmpeg/ffplay.exe", PlayerPath),
+                    new DownloadTask("https://master.ayra.ch/LOGIN/pub/Applications/Tools/ffmpeg/ffprobe.exe", ProbePath)
                 };
             }
+        }
+
+        public static TimeSpan GetDuration(string Filename)
+        {
+            if (!File.Exists(Filename))
+            {
+                throw new FileNotFoundException("Cannot find the file on your disk. Is this a stream?", Filename);
+            }
+            var P = new Process()
+            {
+                StartInfo = new ProcessStartInfo()
+                {
+                    FileName = ProbePath,
+                    Arguments = $"-i \"{Filename}\" -show_entries format=duration -v quiet -of csv=\"p=0\"",
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    CreateNoWindow = true
+                }
+            };
+            using (P)
+            {
+                if (P.Start())
+                {
+                    var Data = P.StandardOutput.ReadToEnd().Trim();
+                    P.WaitForExit();
+                    if (double.TryParse(Data, out double d))
+                    {
+                        return TimeSpan.FromSeconds(d);
+                    }
+                    throw new Exception("Cannot determine the media file length. Not a valid media file?");
+                }
+            }
+            throw new Exception($"Cannot start {P.StartInfo.FileName}");
         }
 
         public static Process PlayFileOrStream(string FileOrStream)
@@ -62,7 +95,7 @@ namespace DVMusicEdit
             {
                 throw new SecurityException("Possible file name based shell attack. Please sanitize name");
             }
-            return Process.Start(PlayerPath, $"\"{FileOrStream}\"");
+            return Process.Start(PlayerPath, $"-vn \"{FileOrStream}\"");
         }
     }
 }

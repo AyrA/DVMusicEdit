@@ -20,6 +20,11 @@ namespace DVMusicEdit
             }
         }
 
+        public static void Info(string Msg, string Title)
+        {
+            MessageBox.Show(Msg, Title, MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
         public static void Warn(string Msg, string Title)
         {
             MessageBox.Show(Msg, Title, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);

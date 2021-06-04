@@ -191,14 +191,38 @@ namespace DVMusicEdit
             {
                 if (Tools.AskWarn("Reset this playlist to what is stored in the file?", "Reset playlist") == DialogResult.Yes)
                 {
-
+                    //TODO: Reset
                 }
             }
         }
 
         private void btnPlay_Click(object sender, EventArgs e)
         {
-
+            if (lvPlaylist.SelectedItems.Count == 0)
+            {
+                return;
+            }
+            if (lvPlaylist.SelectedItems.Count > 1)
+            {
+                Tools.Info("Only the first selected file will play", "Multiple files selected");
+            }
+            var allOK = true;
+            var Tasks = FFmpeg.DownloadLinks.Where(m => m.DownloadRequired).ToArray();
+            if (Tasks.Length > 0)
+            {
+                MessageBox.Show("Playback is handled through FFmpeg but it's missing and will be downloaded now.");
+            }
+            foreach (var T in Tasks)
+            {
+                using (var f = new frmDownload(T.URL, T.Filename))
+                {
+                    allOK &= f.ShowDialog() == DialogResult.OK;
+                }
+            }
+            if (allOK)
+            {
+                FFmpeg.PlayFileOrStream(lvPlaylist.SelectedItems[0].Text);
+            }
         }
     }
 }
