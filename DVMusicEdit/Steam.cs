@@ -1,10 +1,7 @@
 ﻿using Microsoft.Win32;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 namespace DVMusicEdit
 {
@@ -45,6 +42,7 @@ namespace DVMusicEdit
                                 P = Path.Combine(Path.GetDirectoryName(P), "steamapps");
                                 if (Directory.Exists(P))
                                 {
+                                    //The main library itself is added too because it's not contained in the configuration file.
                                     Libs.Add(P);
                                     Libs.AddRange(GetLibraryConfig(P));
                                 }
@@ -58,8 +56,27 @@ namespace DVMusicEdit
 
         private static string[] GetLibraryConfig(string MasterLibrary)
         {
+            //This matches: "<number>" "<anything>"
+            //This captures: <anything>
+            var R = new Regex("^\"\\d+\"\\s+\"(.*)\"$");
             var Libs = new List<string>();
             var MasterFile = Path.Combine(MasterLibrary, "libraryfolders.vdf");
+            if(File.Exists(MasterFile))
+            {
+                var Lines = File.ReadAllText(MasterFile).Split('\n');
+                foreach(var Line in Lines)
+                {
+                    var L = Line.Trim();
+                    var M = R.Match(L);
+                    if (M.Success)
+                    {
+                        //Note: The string is "escaped" using backslashes.
+                        //For now, we just replace double backslashes, but if the escaping is ever a problem,
+                        //We can probably load a JSON library and feed the escaped string through the decoder function.
+                        Libs.Add(M.Groups[1].Value.Replace(@"\\", @"\"));
+                    }
+                }
+            }
             return Libs.ToArray();
         }
     }

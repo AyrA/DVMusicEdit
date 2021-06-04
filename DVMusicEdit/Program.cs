@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace DVMusicEdit
 {
@@ -17,7 +13,7 @@ namespace DVMusicEdit
             //Application.EnableVisualStyles();
             //Application.SetCompatibleTextRenderingDefault(false);
             //Application.Run(new Form1());
-            Steam.ScanLib();
+            Console.WriteLine(string.Join("\r\n", Steam.Libraries));
             Console.ReadKey(true);
         }
     }
