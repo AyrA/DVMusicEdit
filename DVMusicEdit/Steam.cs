@@ -61,10 +61,10 @@ namespace DVMusicEdit
             var R = new Regex("^\"\\d+\"\\s+\"(.*)\"$");
             var Libs = new List<string>();
             var MasterFile = Path.Combine(MasterLibrary, "libraryfolders.vdf");
-            if(File.Exists(MasterFile))
+            if (File.Exists(MasterFile))
             {
                 var Lines = File.ReadAllText(MasterFile).Split('\n');
-                foreach(var Line in Lines)
+                foreach (var Line in Lines)
                 {
                     var L = Line.Trim();
                     var M = R.Match(L);
@@ -73,7 +73,7 @@ namespace DVMusicEdit
                         //Note: The string is "escaped" using backslashes.
                         //For now, we just replace double backslashes, but if the escaping is ever a problem,
                         //We can probably load a JSON library and feed the escaped string through the decoder function.
-                        Libs.Add(M.Groups[1].Value.Replace(@"\\", @"\"));
+                        Libs.Add(Path.Combine(M.Groups[1].Value.Replace(@"\\", @"\"), "steamapps"));
                     }
                 }
             }
