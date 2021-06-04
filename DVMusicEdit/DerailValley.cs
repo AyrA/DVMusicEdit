@@ -9,6 +9,7 @@ namespace DVMusicEdit
 {
     public class DerailValley
     {
+        private const int LIST_SIZE = 11;
         private readonly string MusicRootPath;
 
         public Playlist[] Playlists { get; private set; }
@@ -22,38 +23,89 @@ namespace DVMusicEdit
             }
         }
 
-        public void ReloadPlaylists()
+        /// <summary>
+        /// Loads the specified playlist from disk
+        /// </summary>
+        /// <param name="Index">
+        /// Playlist index.
+        /// To load index 0, use <see cref="ReloadRadioList"/> instead
+        /// </param>
+        /// <remarks>
+        /// If the lists have not yet been loaded,
+        /// <see cref="ReloadPlaylists"/> is called internally instead
+        /// </remarks>
+        public void ReloadPlaylist(int ListIndex)
         {
-            Playlists = new Playlist[11];
+            if (ListIndex < 1 || ListIndex >= LIST_SIZE)
+            {
+                throw new ArgumentOutOfRangeException(nameof(ListIndex));
+            }
+            if (Playlists == null)
+            {
+                ReloadPlaylists();
+            }
+            else
+            {
+                SetList(ListIndex);
+            }
+        }
 
+        /// <summary>
+        /// Loads the specified playlist from disk
+        /// </summary>
+        /// <param name="Index">Playlist index.</param>
+        private void SetList(int Index)
+        {
+            var ListFile = Path.Combine(MusicRootPath, string.Format("Playlist_{0:00}.pls", Index));
+            var AltListFile = Path.Combine(MusicRootPath, string.Format("Playlist_{0:00}.m3u", Index));
+            if (File.Exists(ListFile))
+            {
+                Playlists[Index] = Playlist.FromString(File.ReadAllText(ListFile));
+            }
+            else if (File.Exists(AltListFile))
+            {
+                Playlists[Index] = Playlist.FromFileList(File.ReadAllLines(AltListFile).Where(m => !m.StartsWith("#")).ToArray());
+                try
+                {
+                    File.WriteAllText(ListFile, Playlists[Index].Serialize());
+                    File.Delete(AltListFile);
+                }
+                catch
+                {
+                    Playlists[Index] = null;
+                }
+            }
+            else
+            {
+                Playlists[Index] = null;
+            }
+        }
+
+        /// <summary>
+        /// Loads the radio stream list from disk
+        /// </summary>
+        public void ReloadRadioList()
+        {
             var RadioList = Path.Combine(MusicRootPath, "Radio.pls");
 
             if (File.Exists(RadioList))
             {
                 Playlists[0] = Playlist.FromString(File.ReadAllText(RadioList));
             }
+        }
 
-            for (var i = 1; i <= 10; i++)
+        /// <summary>
+        /// Reloads all playlists from disk
+        /// </summary>
+        public void ReloadPlaylists()
+        {
+            Playlists = new Playlist[LIST_SIZE];
+
+            ReloadRadioList();
+
+            for (var i = 1; i <= LIST_SIZE - 1; i++)
             {
-                var ListFile = Path.Combine(MusicRootPath, string.Format("Playlist_{0:00}.pls", i));
-                var AltListFile = Path.Combine(MusicRootPath, string.Format("Playlist_{0:00}.m3u", i));
-                if (File.Exists(ListFile))
-                {
-                    Playlists[i] = Playlist.FromString(File.ReadAllText(ListFile));
-                }
-                else if (File.Exists(AltListFile))
-                {
-                    Playlists[i] = Playlist.FromFileList(File.ReadAllLines(AltListFile).Where(m => !m.StartsWith("#")).ToArray());
-                    try
-                    {
-                        File.WriteAllText(ListFile, Playlists[i].Serialize());
-                        File.Delete(AltListFile);
-                    }
-                    catch
-                    {
-                        Playlists[i] = null;
-                    }
-                }
+                SetList(i);
             }
         }
     }

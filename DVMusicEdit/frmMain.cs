@@ -160,6 +160,11 @@ namespace DVMusicEdit
                     PL.MoveUp(I);
                 }
                 RenderList(PL);
+                //Keep the moved item selected
+                foreach (var I in Indexes)
+                {
+                    lvPlaylist.Items[I - 1].Selected = true;
+                }
             }
         }
 
@@ -182,6 +187,11 @@ namespace DVMusicEdit
                     PL.MoveDown(I);
                 }
                 RenderList(PL);
+                //Keep the moved item selected
+                foreach (var I in Indexes)
+                {
+                    lvPlaylist.Items[I + 1].Selected = true;
+                }
             }
         }
 
@@ -191,7 +201,15 @@ namespace DVMusicEdit
             {
                 if (Tools.AskWarn("Reset this playlist to what is stored in the file?", "Reset playlist") == DialogResult.Yes)
                 {
-                    //TODO: Reset
+                    if (lbPlaylists.SelectedIndex > 0)
+                    {
+                        DV.ReloadPlaylist(lbPlaylists.SelectedIndex);
+                    }
+                    else
+                    {
+                        DV.ReloadRadioList();
+                    }
+                    RenderList(DV.Playlists[lbPlaylists.SelectedIndex]);
                 }
             }
         }
