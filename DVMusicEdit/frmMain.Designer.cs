@@ -41,9 +41,10 @@ namespace DVMusicEdit
             this.btnDown = new System.Windows.Forms.Button();
             this.btnSave = new System.Windows.Forms.Button();
             this.CmsAdd = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.browseForLocalfilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.addHTTPStreamToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.importFromYoutubeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmsAddLocal = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmsAddStream = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmsAddYoutube = new System.Windows.Forms.ToolStripMenuItem();
+            this.button1 = new System.Windows.Forms.Button();
             this.CmsAdd.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -110,6 +111,7 @@ namespace DVMusicEdit
             this.btnDelete.TabIndex = 3;
             this.btnDelete.Text = "&Delete";
             this.btnDelete.UseVisualStyleBackColor = true;
+            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
             // 
             // btnUp
             // 
@@ -120,6 +122,7 @@ namespace DVMusicEdit
             this.btnUp.TabIndex = 4;
             this.btnUp.Text = "Move &Up";
             this.btnUp.UseVisualStyleBackColor = true;
+            this.btnUp.Click += new System.EventHandler(this.btnUp_Click);
             // 
             // btnDown
             // 
@@ -130,6 +133,7 @@ namespace DVMusicEdit
             this.btnDown.TabIndex = 5;
             this.btnDown.Text = "&Move Down";
             this.btnDown.UseVisualStyleBackColor = true;
+            this.btnDown.Click += new System.EventHandler(this.btnDown_Click);
             // 
             // btnSave
             // 
@@ -144,35 +148,46 @@ namespace DVMusicEdit
             // CmsAdd
             // 
             this.CmsAdd.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.browseForLocalfilesToolStripMenuItem,
-            this.addHTTPStreamToolStripMenuItem,
-            this.importFromYoutubeToolStripMenuItem});
+            this.cmsAddLocal,
+            this.cmsAddStream,
+            this.cmsAddYoutube});
             this.CmsAdd.Name = "CmsAdd";
             this.CmsAdd.Size = new System.Drawing.Size(191, 70);
             // 
-            // browseForLocalfilesToolStripMenuItem
+            // cmsAddLocal
             // 
-            this.browseForLocalfilesToolStripMenuItem.Name = "browseForLocalfilesToolStripMenuItem";
-            this.browseForLocalfilesToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
-            this.browseForLocalfilesToolStripMenuItem.Text = "Browse for local &file(s)";
+            this.cmsAddLocal.Name = "cmsAddLocal";
+            this.cmsAddLocal.Size = new System.Drawing.Size(190, 22);
+            this.cmsAddLocal.Text = "Browse for local &file(s)";
             // 
-            // addHTTPStreamToolStripMenuItem
+            // cmsAddStream
             // 
-            this.addHTTPStreamToolStripMenuItem.Name = "addHTTPStreamToolStripMenuItem";
-            this.addHTTPStreamToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
-            this.addHTTPStreamToolStripMenuItem.Text = "Add &HTTP stream";
+            this.cmsAddStream.Name = "cmsAddStream";
+            this.cmsAddStream.Size = new System.Drawing.Size(190, 22);
+            this.cmsAddStream.Text = "Add &HTTP stream";
             // 
-            // importFromYoutubeToolStripMenuItem
+            // cmsAddYoutube
             // 
-            this.importFromYoutubeToolStripMenuItem.Name = "importFromYoutubeToolStripMenuItem";
-            this.importFromYoutubeToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
-            this.importFromYoutubeToolStripMenuItem.Text = "Import from &Youtube";
+            this.cmsAddYoutube.Name = "cmsAddYoutube";
+            this.cmsAddYoutube.Size = new System.Drawing.Size(190, 22);
+            this.cmsAddYoutube.Text = "Import from &Youtube";
+            // 
+            // button1
+            // 
+            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.button1.Location = new System.Drawing.Point(508, 318);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 6;
+            this.button1.Text = "&Reset...";
+            this.button1.UseVisualStyleBackColor = true;
             // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(676, 353);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.btnDown);
             this.Controls.Add(this.btnUp);
@@ -200,9 +215,10 @@ namespace DVMusicEdit
         private System.Windows.Forms.Button btnDown;
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.ContextMenuStrip CmsAdd;
-        private System.Windows.Forms.ToolStripMenuItem browseForLocalfilesToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem addHTTPStreamToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem importFromYoutubeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem cmsAddLocal;
+        private System.Windows.Forms.ToolStripMenuItem cmsAddStream;
+        private System.Windows.Forms.ToolStripMenuItem cmsAddYoutube;
+        private System.Windows.Forms.Button button1;
     }
 }
 

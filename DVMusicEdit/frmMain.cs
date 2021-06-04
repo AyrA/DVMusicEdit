@@ -1,10 +1,17 @@
 ﻿using System;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace DVMusicEdit
 {
     public partial class frmMain : Form
     {
+        private enum PlaylistType
+        {
+            Radio,
+            Tape
+        }
+
         private string DerailValleyPath;
         private DerailValley DV;
 
@@ -27,19 +34,19 @@ namespace DVMusicEdit
 
         private void InitDV()
         {
-            var Lists = DV.GetPlaylists();
+            DV.ReloadPlaylists();
             lbPlaylists.Items.Clear();
             lbPlaylists.Items.Add("Radio");
             for (var i = 1; i <= 10; i++)
             {
                 var BaseStr = $"Tape #{i}";
-                if (Lists[i] == null || Lists[i].Count == 0)
+                if (DV.Playlists[i] == null || DV.Playlists[i].Count == 0)
                 {
                     BaseStr += " (empty)";
                 }
                 else
                 {
-                    BaseStr += $" ({Lists[i].Count} items)";
+                    BaseStr += $" ({DV.Playlists[i].Count} items)";
                 }
                 lbPlaylists.Items.Add(BaseStr);
             }
@@ -49,37 +56,120 @@ namespace DVMusicEdit
         {
             if (lbPlaylists.SelectedIndex >= 0)
             {
-                var PL = DV.GetPlaylists()[lbPlaylists.SelectedIndex];
-                lvPlaylist.Items.Clear();
-                if (PL != null)
+                var PL = DV.Playlists[lbPlaylists.SelectedIndex];
+                RenderList(PL);
+                SetListFunction(lbPlaylists.SelectedIndex == 0 ? PlaylistType.Radio : PlaylistType.Tape);
+            }
+        }
+
+        private void SetListFunction(PlaylistType ListType)
+        {
+            switch (ListType)
+            {
+                case PlaylistType.Radio:
+                    cmsAddLocal.Visible = cmsAddYoutube.Visible = false;
+                    cmsAddStream.Visible = true;
+                    break;
+                default:
+                    cmsAddLocal.Visible = cmsAddYoutube.Visible = true;
+                    cmsAddStream.Visible = false;
+                    break;
+            }
+        }
+
+        private void RenderList(Playlist PL)
+        {
+            lvPlaylist.Items.Clear();
+            if (PL != null)
+            {
+                foreach (var Entry in PL.Entries)
                 {
-                    foreach (var Entry in PL.Entries)
+                    var Item = lvPlaylist.Items.Add(Entry.FileName);
+                    if (Entry.Duration >= 0)
                     {
-                        var Item = lvPlaylist.Items.Add(Entry.FileName);
-                        if (Entry.Duration >= 0)
-                        {
-                            Item.SubItems.Add(TimeSpan.FromSeconds(Entry.Duration).ToString());
-                        }
-                        else
-                        {
-                            Item.SubItems.Add("<N/A>");
-                        }
-                        if (!string.IsNullOrEmpty(Entry.Title))
-                        {
-                            Item.SubItems.Add(Entry.Title);
-                        }
-                        else
-                        {
-                            Item.SubItems.Add("<N/A>");
-                        }
+                        Item.SubItems.Add(TimeSpan.FromSeconds(Entry.Duration).ToString());
+                    }
+                    else
+                    {
+                        Item.SubItems.Add("<N/A>");
+                    }
+                    if (!string.IsNullOrEmpty(Entry.Title))
+                    {
+                        Item.SubItems.Add(Entry.Title);
+                    }
+                    else
+                    {
+                        Item.SubItems.Add("<N/A>");
                     }
                 }
+            }
+            if (lvPlaylist.Items.Count > 0)
+            {
+                lvPlaylist.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
             }
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
             CmsAdd.Show(btnAdd, new System.Drawing.Point(0, btnAdd.Height));
+        }
+
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            var Indexes = lvPlaylist.SelectedIndices
+                .OfType<int>()
+                .OrderBy(m => m)
+                .Reverse()
+                .ToArray();
+            var PL = DV.Playlists[lbPlaylists.SelectedIndex];
+            foreach (var I in Indexes)
+            {
+                PL.RemoveItem(I);
+            }
+            RenderList(PL);
+        }
+
+        private void btnUp_Click(object sender, EventArgs e)
+        {
+            var Indexes = lvPlaylist.SelectedIndices
+                .OfType<int>()
+                .OrderBy(m => m)
+                .ToArray();
+            var PL = DV.Playlists[lbPlaylists.SelectedIndex];
+            if (Indexes.Contains(0))
+            {
+                Tools.Warn("Cannot move first item further up", "Cannot move first item");
+            }
+            else
+            {
+                foreach (var I in Indexes)
+                {
+                    PL.MoveUp(I);
+                }
+                RenderList(PL);
+            }
+        }
+
+        private void btnDown_Click(object sender, EventArgs e)
+        {
+            var Indexes = lvPlaylist.SelectedIndices
+                .OfType<int>()
+                .OrderBy(m => m)
+                .Reverse()
+                .ToArray();
+            if (Indexes.Contains(lvPlaylist.Items.Count - 1))
+            {
+                Tools.Warn("Cannot move last item further down", "Cannot move last item");
+            }
+            else
+            {
+                var PL = DV.Playlists[lbPlaylists.SelectedIndex];
+                foreach (var I in Indexes)
+                {
+                    PL.MoveDown(I);
+                }
+                RenderList(PL);
+            }
         }
     }
 }
