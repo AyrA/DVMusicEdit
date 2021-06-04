@@ -44,7 +44,8 @@ namespace DVMusicEdit
             this.cmsAddLocal = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsAddStream = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsAddYoutube = new System.Windows.Forms.ToolStripMenuItem();
-            this.button1 = new System.Windows.Forms.Button();
+            this.btnReset = new System.Windows.Forms.Button();
+            this.btnPlay = new System.Windows.Forms.Button();
             this.CmsAdd.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -172,26 +173,39 @@ namespace DVMusicEdit
             this.cmsAddYoutube.Size = new System.Drawing.Size(190, 22);
             this.cmsAddYoutube.Text = "Import from &Youtube";
             // 
-            // button1
+            // btnReset
             // 
-            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.button1.Location = new System.Drawing.Point(508, 318);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 6;
-            this.button1.Text = "&Reset...";
-            this.button1.UseVisualStyleBackColor = true;
+            this.btnReset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnReset.Location = new System.Drawing.Point(508, 318);
+            this.btnReset.Name = "btnReset";
+            this.btnReset.Size = new System.Drawing.Size(75, 23);
+            this.btnReset.TabIndex = 6;
+            this.btnReset.Text = "&Reset...";
+            this.btnReset.UseVisualStyleBackColor = true;
+            this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
+            // 
+            // btnPlay
+            // 
+            this.btnPlay.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnPlay.Location = new System.Drawing.Point(265, 287);
+            this.btnPlay.Name = "btnPlay";
+            this.btnPlay.Size = new System.Drawing.Size(75, 23);
+            this.btnPlay.TabIndex = 2;
+            this.btnPlay.Text = "&Play";
+            this.btnPlay.UseVisualStyleBackColor = true;
+            this.btnPlay.Click += new System.EventHandler(this.btnPlay_Click);
             // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(676, 353);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.btnReset);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.btnDown);
             this.Controls.Add(this.btnUp);
             this.Controls.Add(this.btnDelete);
+            this.Controls.Add(this.btnPlay);
             this.Controls.Add(this.btnAdd);
             this.Controls.Add(this.lvPlaylist);
             this.Controls.Add(this.lbPlaylists);
@@ -218,7 +232,8 @@ namespace DVMusicEdit
         private System.Windows.Forms.ToolStripMenuItem cmsAddLocal;
         private System.Windows.Forms.ToolStripMenuItem cmsAddStream;
         private System.Windows.Forms.ToolStripMenuItem cmsAddYoutube;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btnReset;
+        private System.Windows.Forms.Button btnPlay;
     }
 }
 

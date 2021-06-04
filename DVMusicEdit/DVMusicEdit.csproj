@@ -52,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DerailValley.cs" />
+    <Compile Include="Ffmpeg.cs" />
     <Compile Include="frmMain.cs">
       <SubType>Form</SubType>
     </Compile>

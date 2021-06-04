@@ -50,6 +50,14 @@ namespace DVMusicEdit
                 }
                 lbPlaylists.Items.Add(BaseStr);
             }
+            SetEditControls(false);
+        }
+
+        private void SetEditControls(bool enabled)
+        {
+            btnAdd.Enabled = btnDelete.Enabled =
+                btnUp.Enabled = btnDown.Enabled =
+                btnReset.Enabled = btnSave.Enabled = enabled;
         }
 
         private void lbPlaylists_SelectedIndexChanged(object sender, EventArgs e)
@@ -59,6 +67,11 @@ namespace DVMusicEdit
                 var PL = DV.Playlists[lbPlaylists.SelectedIndex];
                 RenderList(PL);
                 SetListFunction(lbPlaylists.SelectedIndex == 0 ? PlaylistType.Radio : PlaylistType.Tape);
+                SetEditControls(true);
+            }
+            else
+            {
+                SetEditControls(false);
             }
         }
 
@@ -170,6 +183,22 @@ namespace DVMusicEdit
                 }
                 RenderList(PL);
             }
+        }
+
+        private void btnReset_Click(object sender, EventArgs e)
+        {
+            if (lbPlaylists.SelectedIndex >= 0)
+            {
+                if (Tools.AskWarn("Reset this playlist to what is stored in the file?", "Reset playlist") == DialogResult.Yes)
+                {
+
+                }
+            }
+        }
+
+        private void btnPlay_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
