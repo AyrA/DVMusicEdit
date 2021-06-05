@@ -358,6 +358,11 @@ Do not close this application or you lose your changes.", "Failed to save files"
                     Tools.Error($"Unsupported stream type. Stream URL must start with http(s)://", "Clipboard error");
                     return;
                 }
+                if (Radio.Entries.Any(m => m.FileName == Text))
+                {
+                    Tools.Warn($"You already have {Text} in the list", "Duplicate item");
+                    return;
+                }
                 Radio.AddItem(Entry.FileName);
                 //Add and select temp item
                 RenderList(Radio);
@@ -374,6 +379,15 @@ Do not close this application or you lose your changes.", "Failed to save files"
         private void cmsAddYoutube_Click(object sender, EventArgs e)
         {
             Tools.Error("This is currently not implemented and will be part of a later version", "Missing feature");
+        }
+
+        private void lvPlaylist_DoubleClick(object sender, EventArgs e)
+        {
+            var Item = lvPlaylist.SelectedItems.OfType<ListViewItem>().FirstOrDefault();
+            if (Item != null)
+            {
+                EditEntry(DV.Playlists[lbPlaylists.SelectedIndex], Item.Index);
+            }
         }
     }
 }

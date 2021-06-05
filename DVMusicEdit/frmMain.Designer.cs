@@ -79,6 +79,7 @@ namespace DVMusicEdit
             this.lvPlaylist.TabIndex = 1;
             this.lvPlaylist.UseCompatibleStateImageBehavior = false;
             this.lvPlaylist.View = System.Windows.Forms.View.Details;
+            this.lvPlaylist.DoubleClick += new System.EventHandler(this.lvPlaylist_DoubleClick);
             // 
             // chFile
             // 
