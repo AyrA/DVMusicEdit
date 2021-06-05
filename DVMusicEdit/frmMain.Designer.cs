@@ -48,7 +48,12 @@ namespace DVMusicEdit
             this.btnPlay = new System.Windows.Forms.Button();
             this.OFD = new System.Windows.Forms.OpenFileDialog();
             this.btnEdit = new System.Windows.Forms.Button();
+            this.btnMore = new System.Windows.Forms.Button();
+            this.CmsMore = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.cmsDownloadFfmpeg = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmsDownloadYoutubedl = new System.Windows.Forms.ToolStripMenuItem();
             this.CmsAdd.SuspendLayout();
+            this.CmsMore.SuspendLayout();
             this.SuspendLayout();
             // 
             // lbPlaylists
@@ -146,7 +151,7 @@ namespace DVMusicEdit
             this.btnSave.Location = new System.Drawing.Point(789, 318);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(75, 23);
-            this.btnSave.TabIndex = 9;
+            this.btnSave.TabIndex = 10;
             this.btnSave.Text = "&Save all...";
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
@@ -187,7 +192,7 @@ namespace DVMusicEdit
             this.btnReset.Location = new System.Drawing.Point(708, 318);
             this.btnReset.Name = "btnReset";
             this.btnReset.Size = new System.Drawing.Size(75, 23);
-            this.btnReset.TabIndex = 8;
+            this.btnReset.TabIndex = 9;
             this.btnReset.Text = "&Reset...";
             this.btnReset.UseVisualStyleBackColor = true;
             this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
@@ -220,11 +225,45 @@ namespace DVMusicEdit
             this.btnEdit.UseVisualStyleBackColor = true;
             this.btnEdit.Click += new System.EventHandler(this.btnEdit_Click);
             // 
+            // btnMore
+            // 
+            this.btnMore.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnMore.Location = new System.Drawing.Point(627, 318);
+            this.btnMore.Name = "btnMore";
+            this.btnMore.Size = new System.Drawing.Size(75, 23);
+            this.btnMore.TabIndex = 8;
+            this.btnMore.Text = "M&ore...";
+            this.btnMore.UseVisualStyleBackColor = true;
+            this.btnMore.Click += new System.EventHandler(this.btnMore_Click);
+            // 
+            // CmsMore
+            // 
+            this.CmsMore.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.cmsDownloadFfmpeg,
+            this.cmsDownloadYoutubedl});
+            this.CmsMore.Name = "CmsMore";
+            this.CmsMore.Size = new System.Drawing.Size(191, 70);
+            // 
+            // cmsDownloadFfmpeg
+            // 
+            this.cmsDownloadFfmpeg.Name = "cmsDownloadFfmpeg";
+            this.cmsDownloadFfmpeg.Size = new System.Drawing.Size(190, 22);
+            this.cmsDownloadFfmpeg.Text = "Download &Ffmpeg";
+            this.cmsDownloadFfmpeg.Click += new System.EventHandler(this.cmsDownloadFfmpeg_Click);
+            // 
+            // cmsDownloadYoutubedl
+            // 
+            this.cmsDownloadYoutubedl.Name = "cmsDownloadYoutubedl";
+            this.cmsDownloadYoutubedl.Size = new System.Drawing.Size(190, 22);
+            this.cmsDownloadYoutubedl.Text = "Download &Youtube-dl";
+            this.cmsDownloadYoutubedl.Click += new System.EventHandler(this.cmsDownloadYoutubedl_Click);
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(876, 353);
+            this.Controls.Add(this.btnMore);
             this.Controls.Add(this.btnReset);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.btnDown);
@@ -241,6 +280,7 @@ namespace DVMusicEdit
             this.Text = "Derail Valley Playlist Manager";
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.frmMain_KeyDown);
             this.CmsAdd.ResumeLayout(false);
+            this.CmsMore.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -265,6 +305,10 @@ namespace DVMusicEdit
         private System.Windows.Forms.Button btnPlay;
         private System.Windows.Forms.OpenFileDialog OFD;
         private System.Windows.Forms.Button btnEdit;
+        private System.Windows.Forms.Button btnMore;
+        private System.Windows.Forms.ContextMenuStrip CmsMore;
+        private System.Windows.Forms.ToolStripMenuItem cmsDownloadFfmpeg;
+        private System.Windows.Forms.ToolStripMenuItem cmsDownloadYoutubedl;
     }
 }
 

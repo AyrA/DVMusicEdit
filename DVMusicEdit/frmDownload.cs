@@ -14,11 +14,13 @@ namespace DVMusicEdit
 {
     public partial class frmDownload : Form
     {
-        WebClient WC;
+        private WebClient WC;
+        private string Filename;
 
         public frmDownload(Uri URL, string Destination)
         {
             InitializeComponent();
+            Filename = Destination;
             Text += $" [{Path.GetFileName(Destination)}]";
             WC = new WebClient();
             WC.DownloadProgressChanged += WC_DownloadProgressChanged;
@@ -72,8 +74,27 @@ namespace DVMusicEdit
 
         private void frmDownload_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (WC.IsBusy && Tools.AskWarn("Abort the current download?", "Download in progress"))
+            if (WC.IsBusy && !Tools.AskWarn("Abort the current download?", "Download in progress"))
             {
+                try
+                {
+                    WC.CancelAsync();
+                }
+                catch
+                {
+                    //Don't care
+                }
+                while(File.Exists(Filename))
+                {
+                    try
+                    {
+                        File.Delete(Filename);
+                    }
+                    catch
+                    {
+                        System.Threading.Thread.Sleep(500);
+                    }
+                }
                 //If the download has completed, don't cancel the close event
                 e.Cancel = WC.IsBusy;
             }

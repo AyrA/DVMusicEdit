@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Security;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,28 +12,56 @@ namespace DVMusicEdit
 {
     public static class FFmpeg
     {
+        public const string HTTP_BASE = "https://ayra.ch/ffmpeg/";
+
+        /// <summary>
+        /// Base path of all ffmpeg executables and libraries
+        /// </summary>
+        public static string BasePath
+        {
+            get
+            {
+                return Path.Combine(Tools.ApplicationPath, "ffmpeg");
+            }
+        }
+
+        /// <summary>
+        /// Full path to the converter
+        /// </summary>
         public static string ConverterPath
         {
             get
             {
-                return Path.Combine(Tools.ApplicationPath, "ffmpeg.exe");
+                return Path.Combine(BasePath, "ffmpeg.exe");
             }
         }
+        /// <summary>
+        /// Full path to the player
+        /// </summary>
         public static string PlayerPath
         {
             get
             {
-                return Path.Combine(Tools.ApplicationPath, "ffplay.exe");
+                return Path.Combine(BasePath, "ffplay.exe");
             }
         }
+        /// <summary>
+        /// Full path to the data extracter
+        /// </summary>
         public static string ProbePath
         {
             get
             {
-                return Path.Combine(Tools.ApplicationPath, "ffprobe.exe");
+                return Path.Combine(BasePath, "ffprobe.exe");
             }
         }
-        public static bool Ready
+        /// <summary>
+        /// Checks if
+        /// <see cref="ConverterPath"/>,
+        /// <see cref="PlayerPath"/>, and
+        /// <see cref="ProbePath" /> are available
+        /// </summary>
+        public static bool IsReady
         {
             get
             {
@@ -42,19 +71,43 @@ namespace DVMusicEdit
             }
         }
 
+        private static DownloadTask[] _tasks = null;
+
+        /// <summary>
+        /// Gets all download tasks needed to obtain ffmpeg
+        /// </summary>
         public static DownloadTask[] DownloadLinks
         {
             get
             {
-                return new DownloadTask[]
+                if (_tasks == null)
                 {
-                    new DownloadTask("https://master.ayra.ch/LOGIN/pub/Applications/Tools/ffmpeg/ffmpeg.exe", ConverterPath),
-                    new DownloadTask("https://master.ayra.ch/LOGIN/pub/Applications/Tools/ffmpeg/ffplay.exe", PlayerPath),
-                    new DownloadTask("https://master.ayra.ch/LOGIN/pub/Applications/Tools/ffmpeg/ffprobe.exe", ProbePath)
-                };
+                    BuildDownloadList();
+                }
+                return (DownloadTask[])_tasks.Clone();
             }
         }
 
+        /// <summary>
+        /// Builds the dynamic download list
+        /// </summary>
+        public static void BuildDownloadList()
+        {
+            if (_tasks == null)
+            {
+                var WC = new WebClient();
+                var Lines = WC.DownloadString(HTTP_BASE).Trim().Split('\n');
+                _tasks = Lines
+                    .Select(m => new DownloadTask(HTTP_BASE + m, Path.Combine(BasePath, m)))
+                    .ToArray();
+            }
+        }
+
+        /// <summary>
+        /// Gets the duration of a file
+        /// </summary>
+        /// <param name="Filename">media file name</param>
+        /// <returns>Duration of the media file</returns>
         public static TimeSpan GetDuration(string Filename)
         {
             if (!File.Exists(Filename))
@@ -88,6 +141,11 @@ namespace DVMusicEdit
             throw new Exception($"Cannot start {P.StartInfo.FileName}");
         }
 
+        /// <summary>
+        /// Plays a file or stream
+        /// </summary>
+        /// <param name="FileOrStream">Media file or http stream</param>
+        /// <returns>Player process</returns>
         public static Process PlayFileOrStream(string FileOrStream)
         {
             var Stream = FileOrStream.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
@@ -98,6 +156,12 @@ namespace DVMusicEdit
             return Process.Start(PlayerPath, $"-vn \"{FileOrStream}\"");
         }
 
+        /// <summary>
+        /// Converts a file into OGG format
+        /// </summary>
+        /// <param name="Source">Source media file</param>
+        /// <param name="Destination">OGG destination file</param>
+        /// <returns>Converter process</returns>
         public static Process ConvertToOgg(string Source, string Destination)
         {
             if (!File.Exists(Source))

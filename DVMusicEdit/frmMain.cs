@@ -105,13 +105,16 @@ namespace DVMusicEdit
             if (PL != null)
             {
                 var NeedTimes = PL.Entries.Any(m => !m.IsValidTime);
-                if (NeedTimes && !Tools.AskInfo("Some files seem to be missing the runtime. Do you want to automatically scan for them now?", "Missing times"))
+                if (NeedTimes)
                 {
-                    NeedTimes = false;
-                }
-                else
-                {
-                    NeedTimes = RequireFfmpeg();
+                    if (!Tools.AskInfo("Some files seem to be missing the runtime. Do you want to automatically scan for them now?", "Missing times"))
+                    {
+                        NeedTimes = false;
+                    }
+                    else
+                    {
+                        NeedTimes = RequireFfmpeg(false);
+                    }
                 }
                 foreach (var Entry in PL.Entries)
                 {
@@ -151,19 +154,45 @@ namespace DVMusicEdit
             }
         }
 
-        private bool RequireFfmpeg()
+        private bool RequireFfmpeg(bool Silent)
         {
             var allOK = true;
-            var Tasks = FFmpeg.DownloadLinks.Where(m => m.DownloadRequired).ToArray();
-            if (Tasks.Length > 0)
+            if (!FFmpeg.IsReady)
             {
-                MessageBox.Show("This operation needs FFmpeg but it's missing and will be downloaded now.");
-            }
-            foreach (var T in Tasks)
-            {
-                using (var f = new frmDownload(T.URL, T.Filename))
+                try
                 {
-                    allOK &= f.ShowDialog() == DialogResult.OK;
+                    FFmpeg.BuildDownloadList();
+                }
+                catch (Exception ex)
+                {
+                    if (!Silent)
+                    {
+                        Tools.Error($@"Unable to download ffmpeg.
+If this keeps happening, check that {FFmpeg.HTTP_BASE} is reachable.
+
+Error: " + ex.Message, "FFmpeg download error");
+                    }
+                    return false;
+                }
+                var Tasks = FFmpeg.DownloadLinks.Where(m => m.DownloadRequired).ToArray();
+                if (Tasks.Length > 0)
+                {
+                    System.IO.Directory.CreateDirectory(FFmpeg.BasePath);
+                    if (!Silent)
+                    {
+                        Tools.Info("This operation needs FFmpeg but it's missing and will be downloaded now.", "FFmpeg required");
+                    }
+                }
+                foreach (var T in Tasks)
+                {
+                    //Stop downloading if a file fails
+                    if (allOK)
+                    {
+                        using (var f = new frmDownload(T.URL, T.Filename))
+                        {
+                            allOK &= f.ShowDialog() == DialogResult.OK;
+                        }
+                    }
                 }
             }
             return allOK;
@@ -186,7 +215,7 @@ namespace DVMusicEdit
         private void EditEntry(Playlist List, int Index)
         {
             var Entry = List.Entries[Index];
-            using (var F = new frmEntry(Entry))
+            using (var F = new frmEntry(Entry, DV.MusicRootPath))
             {
                 if (F.ShowDialog() == DialogResult.OK)
                 {
@@ -315,6 +344,8 @@ Do not close this application or you lose your changes.", "Failed to save files"
             }
         }
 
+        #region Form event handler
+
         private void btnAdd_Click(object sender, EventArgs e)
         {
             CmsAdd.Show(btnAdd, new System.Drawing.Point(0, btnAdd.Height));
@@ -351,9 +382,9 @@ Do not close this application or you lose your changes.", "Failed to save files"
             {
                 Tools.Info("Only the first selected file will play", "Multiple files selected");
             }
-            if (RequireFfmpeg())
+            if (RequireFfmpeg(false))
             {
-                var FullPath = CurrentList.Entries[lvPlaylist.SelectedItems[0].Index].GetFullPath(DV.MusicRootPath + System.IO.Path.DirectorySeparatorChar + "current");
+                var FullPath = CurrentList.Entries[lvPlaylist.SelectedItems[0].Index].GetFullPath(DV.MusicRootPath);
                 FFmpeg.PlayFileOrStream(FullPath);
             }
         }
@@ -377,7 +408,7 @@ Do not close this application or you lose your changes.", "Failed to save files"
                 {
                     if (Tools.AskInfo("Some files are not usable by DerailValley directly and need conversion. Do you wan to convert these files? Selecting [no] will skip them", "Conversion required"))
                     {
-                        if (RequireFfmpeg())
+                        if (RequireFfmpeg(false))
                         {
                             for (var i = 0; i < Files.Length; i++)
                             {
@@ -519,5 +550,48 @@ Do not close this application or you lose your changes.", "Failed to save files"
                     break;
             }
         }
+
+        private void btnMore_Click(object sender, EventArgs e)
+        {
+            CmsMore.Show(btnMore, new System.Drawing.Point(0, btnMore.Height));
+        }
+
+        private void cmsDownloadFfmpeg_Click(object sender, EventArgs e)
+        {
+            if (!FFmpeg.IsReady || Tools.AskWarn("FFmpeg already exists. Do you want to delete it and download it again?\r\nDo this only if the tools seems to not be working.", "Overwrite FFmpeg"))
+            {
+                if (System.IO.Directory.Exists(FFmpeg.BasePath))
+                {
+                    try
+                    {
+                        System.IO.Directory.Delete(FFmpeg.BasePath, true);
+                    }
+                    catch (Exception ex)
+                    {
+                        Tools.Error(@"Cannot delete the exsiting FFmpeg instance.
+Make sure no application has the ffmpeg directory open,
+and try to close ffmpeg.exe/ffplay.exe/ffprobe.exe instance via task manager.
+
+Error: " + ex.Message, "Cannot delete existing files");
+                        return;
+                    }
+                }
+                if (RequireFfmpeg(true))
+                {
+                    Tools.Info("FFmpeg has been downloaded","Download complete");
+                }
+                else
+                {
+                    Tools.Error("FFmpeg download failed. Check your internet connection and try again.", "Download failed");
+                }
+            }
+        }
+
+        private void cmsDownloadYoutubedl_Click(object sender, EventArgs e)
+        {
+            Tools.Error("This is currently not implemented and will be part of a later version", "Missing feature");
+        }
+
+        #endregion
     }
 }
