@@ -75,7 +75,7 @@ namespace DVMusicEdit
             this.lvPlaylist.HideSelection = false;
             this.lvPlaylist.Location = new System.Drawing.Point(138, 12);
             this.lvPlaylist.Name = "lvPlaylist";
-            this.lvPlaylist.Size = new System.Drawing.Size(526, 269);
+            this.lvPlaylist.Size = new System.Drawing.Size(726, 269);
             this.lvPlaylist.TabIndex = 1;
             this.lvPlaylist.UseCompatibleStateImageBehavior = false;
             this.lvPlaylist.View = System.Windows.Forms.View.Details;
@@ -97,10 +97,10 @@ namespace DVMusicEdit
             // btnAdd
             // 
             this.btnAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnAdd.Location = new System.Drawing.Point(346, 287);
+            this.btnAdd.Location = new System.Drawing.Point(465, 287);
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Size = new System.Drawing.Size(75, 23);
-            this.btnAdd.TabIndex = 2;
+            this.btnAdd.TabIndex = 3;
             this.btnAdd.Text = "&Add";
             this.btnAdd.UseVisualStyleBackColor = true;
             this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
@@ -108,10 +108,10 @@ namespace DVMusicEdit
             // btnDelete
             // 
             this.btnDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDelete.Location = new System.Drawing.Point(427, 287);
+            this.btnDelete.Location = new System.Drawing.Point(627, 287);
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.Size = new System.Drawing.Size(75, 23);
-            this.btnDelete.TabIndex = 3;
+            this.btnDelete.TabIndex = 5;
             this.btnDelete.Text = "&Delete";
             this.btnDelete.UseVisualStyleBackColor = true;
             this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
@@ -119,10 +119,10 @@ namespace DVMusicEdit
             // btnUp
             // 
             this.btnUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnUp.Location = new System.Drawing.Point(508, 287);
+            this.btnUp.Location = new System.Drawing.Point(708, 287);
             this.btnUp.Name = "btnUp";
             this.btnUp.Size = new System.Drawing.Size(75, 23);
-            this.btnUp.TabIndex = 4;
+            this.btnUp.TabIndex = 6;
             this.btnUp.Text = "Move &Up";
             this.btnUp.UseVisualStyleBackColor = true;
             this.btnUp.Click += new System.EventHandler(this.btnUp_Click);
@@ -130,10 +130,10 @@ namespace DVMusicEdit
             // btnDown
             // 
             this.btnDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDown.Location = new System.Drawing.Point(589, 287);
+            this.btnDown.Location = new System.Drawing.Point(789, 287);
             this.btnDown.Name = "btnDown";
             this.btnDown.Size = new System.Drawing.Size(75, 23);
-            this.btnDown.TabIndex = 5;
+            this.btnDown.TabIndex = 7;
             this.btnDown.Text = "&Move Down";
             this.btnDown.UseVisualStyleBackColor = true;
             this.btnDown.Click += new System.EventHandler(this.btnDown_Click);
@@ -141,10 +141,10 @@ namespace DVMusicEdit
             // btnSave
             // 
             this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSave.Location = new System.Drawing.Point(589, 318);
+            this.btnSave.Location = new System.Drawing.Point(789, 318);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(75, 23);
-            this.btnSave.TabIndex = 6;
+            this.btnSave.TabIndex = 9;
             this.btnSave.Text = "&Save all...";
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
@@ -163,26 +163,29 @@ namespace DVMusicEdit
             this.cmsAddLocal.Name = "cmsAddLocal";
             this.cmsAddLocal.Size = new System.Drawing.Size(190, 22);
             this.cmsAddLocal.Text = "Browse for local &file(s)";
+            this.cmsAddLocal.Click += new System.EventHandler(this.cmsAddLocal_Click);
             // 
             // cmsAddStream
             // 
             this.cmsAddStream.Name = "cmsAddStream";
             this.cmsAddStream.Size = new System.Drawing.Size(190, 22);
             this.cmsAddStream.Text = "Add &HTTP stream";
+            this.cmsAddStream.Click += new System.EventHandler(this.cmsAddStream_Click);
             // 
             // cmsAddYoutube
             // 
             this.cmsAddYoutube.Name = "cmsAddYoutube";
             this.cmsAddYoutube.Size = new System.Drawing.Size(190, 22);
             this.cmsAddYoutube.Text = "Import from &Youtube";
+            this.cmsAddYoutube.Click += new System.EventHandler(this.cmsAddYoutube_Click);
             // 
             // btnReset
             // 
             this.btnReset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnReset.Location = new System.Drawing.Point(508, 318);
+            this.btnReset.Location = new System.Drawing.Point(708, 318);
             this.btnReset.Name = "btnReset";
             this.btnReset.Size = new System.Drawing.Size(75, 23);
-            this.btnReset.TabIndex = 6;
+            this.btnReset.TabIndex = 8;
             this.btnReset.Text = "&Reset...";
             this.btnReset.UseVisualStyleBackColor = true;
             this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
@@ -190,7 +193,7 @@ namespace DVMusicEdit
             // btnPlay
             // 
             this.btnPlay.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnPlay.Location = new System.Drawing.Point(265, 287);
+            this.btnPlay.Location = new System.Drawing.Point(384, 287);
             this.btnPlay.Name = "btnPlay";
             this.btnPlay.Size = new System.Drawing.Size(75, 23);
             this.btnPlay.TabIndex = 2;
@@ -207,10 +210,10 @@ namespace DVMusicEdit
             // btnEdit
             // 
             this.btnEdit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnEdit.Location = new System.Drawing.Point(184, 287);
+            this.btnEdit.Location = new System.Drawing.Point(546, 287);
             this.btnEdit.Name = "btnEdit";
             this.btnEdit.Size = new System.Drawing.Size(75, 23);
-            this.btnEdit.TabIndex = 2;
+            this.btnEdit.TabIndex = 4;
             this.btnEdit.Text = "&Edit";
             this.btnEdit.UseVisualStyleBackColor = true;
             this.btnEdit.Click += new System.EventHandler(this.btnEdit_Click);
@@ -219,7 +222,7 @@ namespace DVMusicEdit
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(676, 353);
+            this.ClientSize = new System.Drawing.Size(876, 353);
             this.Controls.Add(this.btnReset);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.btnDown);
@@ -230,6 +233,7 @@ namespace DVMusicEdit
             this.Controls.Add(this.btnAdd);
             this.Controls.Add(this.lvPlaylist);
             this.Controls.Add(this.lbPlaylists);
+            this.MinimumSize = new System.Drawing.Size(700, 300);
             this.Name = "frmMain";
             this.Text = "Derail Valley Playlist Manager";
             this.CmsAdd.ResumeLayout(false);

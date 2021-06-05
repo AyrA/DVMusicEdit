@@ -161,6 +161,23 @@ namespace DVMusicEdit
             return allOK;
         }
 
+        private void EditEntry(Playlist List, int Index)
+        {
+            var Entry = List.Entries[Index];
+            using (var F = new frmEntry(Entry))
+            {
+                if (F.ShowDialog() == DialogResult.OK)
+                {
+                    if (Entry.IsStream || Entry.Duration == 0)
+                    {
+                        Entry.Duration = -1;
+                    }
+                    RenderList(List);
+                    lvPlaylist.Items[Index].Selected = true;
+                }
+            }
+        }
+
         private void btnAdd_Click(object sender, EventArgs e)
         {
             CmsAdd.Show(btnAdd, new System.Drawing.Point(0, btnAdd.Height));
@@ -281,19 +298,7 @@ namespace DVMusicEdit
             }
             var Index = lvPlaylist.SelectedItems[0].Index;
             var List = DV.Playlists[lbPlaylists.SelectedIndex];
-            var Entry = List.Entries[Index];
-            using (var F = new frmEntry(Entry))
-            {
-                if (F.ShowDialog() == DialogResult.OK)
-                {
-                    if (Entry.IsStream || Entry.Duration == 0)
-                    {
-                        Entry.Duration = -1;
-                    }
-                    RenderList(List);
-                    lvPlaylist.Items[Index].Selected = true;
-                }
-            }
+            EditEntry(List, Index);
         }
 
         private void btnSave_Click(object sender, EventArgs e)
@@ -305,7 +310,7 @@ namespace DVMusicEdit
                     Tools.Error(@"Failed to save all your changes.
 Most likely reason is that one of the playlist files is in use by another application.
 Try to close any media player that may be accessing the lists and make sure derail valley is not running, then try again.
-Do not close this application or you lose your changes.","Failed to save files");
+Do not close this application or you lose your changes.", "Failed to save files");
                 }
                 //Keep note of where the user was
                 var CurrentList = lbPlaylists.SelectedIndex;
@@ -314,14 +319,61 @@ Do not close this application or you lose your changes.","Failed to save files")
                 //Restore user position
                 RenderList(DV.Playlists[CurrentList]);
                 lbPlaylists.SelectedIndex = CurrentList;
-                foreach(var Index in CurrentItems)
+                foreach (var Index in CurrentItems)
                 {
-                    if(lvPlaylist.Items.Count>Index)
+                    if (lvPlaylist.Items.Count > Index)
                     {
                         lvPlaylist.Items[Index].Selected = true;
                     }
                 }
             }
+        }
+
+        private void cmsAddLocal_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void cmsAddStream_Click(object sender, EventArgs e)
+        {
+            var Radio = DV.Playlists[0];
+            if (Clipboard.ContainsText())
+            {
+                string Text;
+                try
+                {
+                    Text = Clipboard.GetText().Trim();
+                }
+                catch (Exception ex)
+                {
+                    Tools.Error($"Failed to get clipboard contents.\r\n{ex.Message}", "Clipboard error");
+                    return;
+                }
+                var Entry = new PlaylistEntry()
+                {
+                    FileName = Text
+                };
+                if (!Entry.IsStream)
+                {
+                    Tools.Error($"Unsupported stream type. Stream URL must start with http(s)://", "Clipboard error");
+                    return;
+                }
+                Radio.AddItem(Entry.FileName);
+                //Add and select temp item
+                RenderList(Radio);
+                lvPlaylist.Items[lvPlaylist.Items.Count - 1].Selected = true;
+                //Edit said temp item
+                EditEntry(Radio, Radio.Entries.Length - 1);
+            }
+            else
+            {
+                Tools.Warn("Your clipboard doesn't contains any text. Please copy the stream URL first.", "Clipboard import failed");
+            }
+        }
+
+        private void cmsAddYoutube_Click(object sender, EventArgs e)
+        {
+            Tools.Error("This is currently not implemented and will be part of a later version", "Missing feature");
         }
     }
 }
