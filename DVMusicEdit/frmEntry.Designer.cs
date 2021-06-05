@@ -36,6 +36,7 @@ namespace DVMusicEdit
             this.label2 = new System.Windows.Forms.Label();
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
+            this.btnPlay = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.nudDuration)).BeginInit();
             this.SuspendLayout();
             // 
@@ -106,6 +107,17 @@ namespace DVMusicEdit
             this.btnCancel.Text = "&Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
+            // btnPlay
+            // 
+            this.btnPlay.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnPlay.Location = new System.Drawing.Point(15, 66);
+            this.btnPlay.Name = "btnPlay";
+            this.btnPlay.Size = new System.Drawing.Size(75, 23);
+            this.btnPlay.TabIndex = 5;
+            this.btnPlay.Text = "&Play";
+            this.btnPlay.UseVisualStyleBackColor = true;
+            this.btnPlay.Click += new System.EventHandler(this.btnPlay_Click);
+            // 
             // frmEntry
             // 
             this.AcceptButton = this.btnOK;
@@ -114,6 +126,7 @@ namespace DVMusicEdit
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(340, 107);
             this.Controls.Add(this.btnCancel);
+            this.Controls.Add(this.btnPlay);
             this.Controls.Add(this.btnOK);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
@@ -143,5 +156,6 @@ namespace DVMusicEdit
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.Button btnPlay;
     }
 }
