@@ -80,6 +80,7 @@ namespace DVMusicEdit
             this.lvPlaylist.UseCompatibleStateImageBehavior = false;
             this.lvPlaylist.View = System.Windows.Forms.View.Details;
             this.lvPlaylist.DoubleClick += new System.EventHandler(this.lvPlaylist_DoubleClick);
+            this.lvPlaylist.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lvPlaylist_KeyDown);
             // 
             // chFile
             // 
@@ -234,9 +235,11 @@ namespace DVMusicEdit
             this.Controls.Add(this.btnAdd);
             this.Controls.Add(this.lvPlaylist);
             this.Controls.Add(this.lbPlaylists);
+            this.KeyPreview = true;
             this.MinimumSize = new System.Drawing.Size(700, 300);
             this.Name = "frmMain";
             this.Text = "Derail Valley Playlist Manager";
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.frmMain_KeyDown);
             this.CmsAdd.ResumeLayout(false);
             this.ResumeLayout(false);
 

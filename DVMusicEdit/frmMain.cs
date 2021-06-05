@@ -161,6 +161,21 @@ namespace DVMusicEdit
             return allOK;
         }
 
+        private void EditEntry()
+        {
+            if (lvPlaylist.SelectedItems.Count == 0)
+            {
+                return;
+            }
+            if (lvPlaylist.SelectedItems.Count > 1)
+            {
+                Tools.Info("Only the first selected file will be edited", "Multiple files selected");
+            }
+            var Index = lvPlaylist.SelectedItems[0].Index;
+            var List = DV.Playlists[lbPlaylists.SelectedIndex];
+            EditEntry(List, Index);
+        }
+
         private void EditEntry(Playlist List, int Index)
         {
             var Entry = List.Entries[Index];
@@ -178,32 +193,12 @@ namespace DVMusicEdit
             }
         }
 
-        private void btnAdd_Click(object sender, EventArgs e)
-        {
-            CmsAdd.Show(btnAdd, new System.Drawing.Point(0, btnAdd.Height));
-        }
-
-        private void btnDelete_Click(object sender, EventArgs e)
+        private void MoveEntriesUp()
         {
             var Indexes = lvPlaylist.SelectedIndices
-                .OfType<int>()
-                .OrderBy(m => m)
-                .Reverse()
-                .ToArray();
-            var PL = DV.Playlists[lbPlaylists.SelectedIndex];
-            foreach (var I in Indexes)
-            {
-                PL.RemoveItem(I);
-            }
-            RenderList(PL);
-        }
-
-        private void btnUp_Click(object sender, EventArgs e)
-        {
-            var Indexes = lvPlaylist.SelectedIndices
-                .OfType<int>()
-                .OrderBy(m => m)
-                .ToArray();
+                            .OfType<int>()
+                            .OrderBy(m => m)
+                            .ToArray();
             var PL = DV.Playlists[lbPlaylists.SelectedIndex];
             if (Indexes.Contains(0))
             {
@@ -224,13 +219,13 @@ namespace DVMusicEdit
             }
         }
 
-        private void btnDown_Click(object sender, EventArgs e)
+        private void MoveEntriesDown()
         {
             var Indexes = lvPlaylist.SelectedIndices
-                .OfType<int>()
-                .OrderBy(m => m)
-                .Reverse()
-                .ToArray();
+                            .OfType<int>()
+                            .OrderBy(m => m)
+                            .Reverse()
+                            .ToArray();
             if (Indexes.Contains(lvPlaylist.Items.Count - 1))
             {
                 Tools.Warn("Cannot move last item further down", "Cannot move last item");
@@ -251,7 +246,22 @@ namespace DVMusicEdit
             }
         }
 
-        private void btnReset_Click(object sender, EventArgs e)
+        private void DeleteSelectedItems()
+        {
+            var Indexes = lvPlaylist.SelectedIndices
+                            .OfType<int>()
+                            .OrderBy(m => m)
+                            .Reverse()
+                            .ToArray();
+            var PL = DV.Playlists[lbPlaylists.SelectedIndex];
+            foreach (var I in Indexes)
+            {
+                PL.RemoveItem(I);
+            }
+            RenderList(PL);
+        }
+
+        private void ResetPlaylists()
         {
             if (lbPlaylists.SelectedIndex >= 0)
             {
@@ -270,38 +280,7 @@ namespace DVMusicEdit
             }
         }
 
-        private void btnPlay_Click(object sender, EventArgs e)
-        {
-            if (lvPlaylist.SelectedItems.Count == 0)
-            {
-                return;
-            }
-            if (lvPlaylist.SelectedItems.Count > 1)
-            {
-                Tools.Info("Only the first selected file will play", "Multiple files selected");
-            }
-            if (RequireFfmpeg())
-            {
-                FFmpeg.PlayFileOrStream(lvPlaylist.SelectedItems[0].Text);
-            }
-        }
-
-        private void btnEdit_Click(object sender, EventArgs e)
-        {
-            if (lvPlaylist.SelectedItems.Count == 0)
-            {
-                return;
-            }
-            if (lvPlaylist.SelectedItems.Count > 1)
-            {
-                Tools.Info("Only the first selected file will be edited", "Multiple files selected");
-            }
-            var Index = lvPlaylist.SelectedItems[0].Index;
-            var List = DV.Playlists[lbPlaylists.SelectedIndex];
-            EditEntry(List, Index);
-        }
-
-        private void btnSave_Click(object sender, EventArgs e)
+        private void SavePlaylists()
         {
             if (Tools.AskWarn("Write all changes? This overwrites any existing list", "Overwrite existing lists"))
             {
@@ -327,6 +306,58 @@ Do not close this application or you lose your changes.", "Failed to save files"
                     }
                 }
             }
+        }
+
+        private void btnAdd_Click(object sender, EventArgs e)
+        {
+            CmsAdd.Show(btnAdd, new System.Drawing.Point(0, btnAdd.Height));
+        }
+
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            DeleteSelectedItems();
+        }
+
+        private void btnUp_Click(object sender, EventArgs e)
+        {
+            MoveEntriesUp();
+        }
+
+        private void btnDown_Click(object sender, EventArgs e)
+        {
+            MoveEntriesDown();
+
+        }
+
+        private void btnReset_Click(object sender, EventArgs e)
+        {
+            ResetPlaylists();
+        }
+
+        private void btnPlay_Click(object sender, EventArgs e)
+        {
+            if (lvPlaylist.SelectedItems.Count == 0)
+            {
+                return;
+            }
+            if (lvPlaylist.SelectedItems.Count > 1)
+            {
+                Tools.Info("Only the first selected file will play", "Multiple files selected");
+            }
+            if (RequireFfmpeg())
+            {
+                FFmpeg.PlayFileOrStream(lvPlaylist.SelectedItems[0].Text);
+            }
+        }
+
+        private void btnEdit_Click(object sender, EventArgs e)
+        {
+            EditEntry();
+        }
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            SavePlaylists();
         }
 
         private void cmsAddLocal_Click(object sender, EventArgs e)
@@ -387,6 +418,66 @@ Do not close this application or you lose your changes.", "Failed to save files"
             if (Item != null)
             {
                 EditEntry(DV.Playlists[lbPlaylists.SelectedIndex], Item.Index);
+            }
+        }
+
+        private void lvPlaylist_KeyDown(object sender, KeyEventArgs e)
+        {
+            switch (e.KeyCode)
+            {
+                case Keys.Insert:
+                    if (btnAdd.Enabled)
+                    {
+                        e.Handled = e.SuppressKeyPress = true;
+                        CmsAdd.Show(MousePosition);
+                    }
+                    break;
+                case Keys.Delete:
+                    if (btnDelete.Enabled)
+                    {
+                        e.Handled = e.SuppressKeyPress = true;
+                        DeleteSelectedItems();
+                    }
+                    break;
+                case Keys.Up:
+                    if (e.Modifiers == Keys.Alt)
+                    {
+                        e.Handled = e.SuppressKeyPress = true;
+                        MoveEntriesUp();
+                    }
+                    break;
+                case Keys.Down:
+                    if (e.Modifiers == Keys.Alt)
+                    {
+                        e.Handled = e.SuppressKeyPress = true;
+                        MoveEntriesDown();
+                    }
+                    break;
+                case Keys.Enter:
+                    e.Handled = e.SuppressKeyPress = true;
+                    EditEntry();
+                    break;
+            }
+        }
+
+        private void frmMain_KeyDown(object sender, KeyEventArgs e)
+        {
+            switch (e.KeyCode)
+            {
+                case Keys.S:
+                    if (e.Modifiers == Keys.Control)
+                    {
+                        e.Handled = e.SuppressKeyPress = true;
+                        SavePlaylists();
+                    }
+                    break;
+                case Keys.R:
+                    if (e.Modifiers == Keys.Control)
+                    {
+                        e.Handled = e.SuppressKeyPress = true;
+                        ResetPlaylists();
+                    }
+                    break;
             }
         }
     }
