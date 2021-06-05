@@ -10,6 +10,9 @@ namespace DVMusicEdit
     public class DerailValley
     {
         private const int LIST_SIZE = 11;
+
+        private static string[] AcceptedExtensions = { ".ogg", ".mp3" };
+
         private readonly string MusicRootPath;
         private readonly string ConvertPath;
 
@@ -141,6 +144,13 @@ namespace DVMusicEdit
             }
         }
 
+        /// <summary>
+        /// Saves all lists to disk
+        /// </summary>
+        /// <returns>
+        /// true, if all lists saved and extra lists deleted.
+        /// False if at least one entry failed to save or delete.
+        /// </returns>
         public bool SaveLists()
         {
             var OK = true;
@@ -172,6 +182,21 @@ namespace DVMusicEdit
                 }
             }
             return OK;
+        }
+
+        /// <summary>
+        /// Checks if the given file name is a valid media file
+        /// </summary>
+        /// <param name="Filename">File name</param>
+        /// <returns>true, if valid</returns>
+        /// <remarks>This only looks at the file name extension and not the content</remarks>
+        public static bool IsAcceptedMediaType(string Filename)
+        {
+            if (string.IsNullOrEmpty(Filename))
+            {
+                throw new ArgumentNullException(nameof(Filename));
+            }
+            return AcceptedExtensions.Contains(Path.GetExtension(Filename.ToLower()));
         }
     }
 }

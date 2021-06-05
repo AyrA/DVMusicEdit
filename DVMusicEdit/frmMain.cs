@@ -362,7 +362,14 @@ Do not close this application or you lose your changes.", "Failed to save files"
 
         private void cmsAddLocal_Click(object sender, EventArgs e)
         {
+            if (OFD.ShowDialog() == DialogResult.OK)
+            {
+                var Files = (string[])OFD.FileNames.Clone();
+                if(Files.Any(DerailValley.IsAcceptedMediaType))
+                {
 
+                }
+            }
         }
 
         private void cmsAddStream_Click(object sender, EventArgs e)
@@ -423,6 +430,11 @@ Do not close this application or you lose your changes.", "Failed to save files"
 
         private void lvPlaylist_KeyDown(object sender, KeyEventArgs e)
         {
+            //Return early if no playlist is selected
+            if (lbPlaylists.SelectedIndex < 0)
+            {
+                return;
+            }
             switch (e.KeyCode)
             {
                 case Keys.Insert:
