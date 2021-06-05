@@ -10,6 +10,23 @@ namespace DVMusicEdit
         public int Duration { get; set; }
         public string Title { get; set; }
 
+        public bool IsStream
+        {
+            get
+            {
+                return
+                    FileName.ToLower().StartsWith("http://") ||
+                    FileName.ToLower().StartsWith("https://");
+            }
+        }
+        public bool IsValidTime
+        {
+            get
+            {
+                return IsStream || Duration > 0;
+            }
+        }
+
         public override string ToString()
         {
             return $"Playlist Entry: {FileName}";

@@ -97,5 +97,30 @@ namespace DVMusicEdit
             }
             return Process.Start(PlayerPath, $"-vn \"{FileOrStream}\"");
         }
+
+        public static Process ConvertToOgg(string Source, string Destination)
+        {
+            if (!File.Exists(Source))
+            {
+                throw new FileNotFoundException("Cannot find the file on your disk. Is this a stream?", Source);
+            }
+            var P = new Process()
+            {
+                StartInfo = new ProcessStartInfo()
+                {
+                    FileName = ConverterPath,
+                    Arguments = $"-i \"{Source}\" -codec:a libvorbis -vn -qscale:a 5 \"{Destination}\"",
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    CreateNoWindow = true
+                }
+            };
+            if (!P.Start())
+            {
+                P.Dispose();
+                throw new Exception("Unable to start the converter");
+            }
+            return P;
+        }
     }
 }

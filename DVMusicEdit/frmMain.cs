@@ -55,6 +55,7 @@ namespace DVMusicEdit
 
         private void SetEditControls(bool enabled)
         {
+            btnPlay.Enabled = btnEdit.Enabled =
             btnAdd.Enabled = btnDelete.Enabled =
                 btnUp.Enabled = btnDown.Enabled =
                 btnReset.Enabled = btnSave.Enabled = enabled;
@@ -95,9 +96,29 @@ namespace DVMusicEdit
             lvPlaylist.Items.Clear();
             if (PL != null)
             {
+                var NeedTimes = PL.Entries.Any(m => !m.IsValidTime);
+                if (NeedTimes && !Tools.AskInfo("Some files seem to be missing the runtime. Do you want to automatically scan for them now?", "Missing times"))
+                {
+                    NeedTimes = false;
+                }
+                else
+                {
+                    NeedTimes = RequireFfmpeg();
+                }
                 foreach (var Entry in PL.Entries)
                 {
                     var Item = lvPlaylist.Items.Add(Entry.FileName);
+                    if (NeedTimes && !Entry.IsValidTime)
+                    {
+                        try
+                        {
+                            Entry.Duration = (int)FFmpeg.GetDuration(Entry.FileName).TotalSeconds;
+                        }
+                        catch (Exception ex)
+                        {
+                            NeedTimes = Tools.AskError($"Can't determine the time of {Entry.FileName}.\r\nReason: {ex.Message}\r\nContinue trying for the remaining files?", "Error determining time");
+                        }
+                    }
                     if (Entry.Duration >= 0)
                     {
                         Item.SubItems.Add(TimeSpan.FromSeconds(Entry.Duration).ToString());
@@ -120,6 +141,24 @@ namespace DVMusicEdit
             {
                 lvPlaylist.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
             }
+        }
+
+        private bool RequireFfmpeg()
+        {
+            var allOK = true;
+            var Tasks = FFmpeg.DownloadLinks.Where(m => m.DownloadRequired).ToArray();
+            if (Tasks.Length > 0)
+            {
+                MessageBox.Show("This operation needs FFmpeg but it's missing and will be downloaded now.");
+            }
+            foreach (var T in Tasks)
+            {
+                using (var f = new frmDownload(T.URL, T.Filename))
+                {
+                    allOK &= f.ShowDialog() == DialogResult.OK;
+                }
+            }
+            return allOK;
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
@@ -199,7 +238,7 @@ namespace DVMusicEdit
         {
             if (lbPlaylists.SelectedIndex >= 0)
             {
-                if (Tools.AskWarn("Reset this playlist to what is stored in the file?", "Reset playlist") == DialogResult.Yes)
+                if (Tools.AskWarn("Reset this playlist to what is stored in the file?", "Reset playlist"))
                 {
                     if (lbPlaylists.SelectedIndex > 0)
                     {
@@ -224,22 +263,64 @@ namespace DVMusicEdit
             {
                 Tools.Info("Only the first selected file will play", "Multiple files selected");
             }
-            var allOK = true;
-            var Tasks = FFmpeg.DownloadLinks.Where(m => m.DownloadRequired).ToArray();
-            if (Tasks.Length > 0)
-            {
-                MessageBox.Show("Playback is handled through FFmpeg but it's missing and will be downloaded now.");
-            }
-            foreach (var T in Tasks)
-            {
-                using (var f = new frmDownload(T.URL, T.Filename))
-                {
-                    allOK &= f.ShowDialog() == DialogResult.OK;
-                }
-            }
-            if (allOK)
+            if (RequireFfmpeg())
             {
                 FFmpeg.PlayFileOrStream(lvPlaylist.SelectedItems[0].Text);
+            }
+        }
+
+        private void btnEdit_Click(object sender, EventArgs e)
+        {
+            if (lvPlaylist.SelectedItems.Count == 0)
+            {
+                return;
+            }
+            if (lvPlaylist.SelectedItems.Count > 1)
+            {
+                Tools.Info("Only the first selected file will be edited", "Multiple files selected");
+            }
+            var Index = lvPlaylist.SelectedItems[0].Index;
+            var List = DV.Playlists[lbPlaylists.SelectedIndex];
+            var Entry = List.Entries[Index];
+            using (var F = new frmEntry(Entry))
+            {
+                if (F.ShowDialog() == DialogResult.OK)
+                {
+                    if (Entry.IsStream || Entry.Duration == 0)
+                    {
+                        Entry.Duration = -1;
+                    }
+                    RenderList(List);
+                    lvPlaylist.Items[Index].Selected = true;
+                }
+            }
+        }
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            if (Tools.AskWarn("Write all changes? This overwrites any existing list", "Overwrite existing lists"))
+            {
+                if (!DV.SaveLists())
+                {
+                    Tools.Error(@"Failed to save all your changes.
+Most likely reason is that one of the playlist files is in use by another application.
+Try to close any media player that may be accessing the lists and make sure derail valley is not running, then try again.
+Do not close this application or you lose your changes.","Failed to save files");
+                }
+                //Keep note of where the user was
+                var CurrentList = lbPlaylists.SelectedIndex;
+                var CurrentItems = lvPlaylist.SelectedIndices.OfType<int>().ToArray();
+                InitDV();
+                //Restore user position
+                RenderList(DV.Playlists[CurrentList]);
+                lbPlaylists.SelectedIndex = CurrentList;
+                foreach(var Index in CurrentItems)
+                {
+                    if(lvPlaylist.Items.Count>Index)
+                    {
+                        lvPlaylist.Items[Index].Selected = true;
+                    }
+                }
             }
         }
     }

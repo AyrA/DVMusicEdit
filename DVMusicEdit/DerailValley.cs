@@ -50,14 +50,23 @@ namespace DVMusicEdit
             }
         }
 
+        private string GetPlaylistFile(int Index)
+        {
+            if (Index == 0)
+            {
+                return Path.Combine(MusicRootPath, "Radio.pls");
+            }
+            return Path.Combine(MusicRootPath, string.Format("Playlist_{0:00}.pls", Index));
+        }
+
         /// <summary>
         /// Loads the specified playlist from disk
         /// </summary>
         /// <param name="Index">Playlist index.</param>
         private void SetList(int Index)
         {
-            var ListFile = Path.Combine(MusicRootPath, string.Format("Playlist_{0:00}.pls", Index));
-            var AltListFile = Path.Combine(MusicRootPath, string.Format("Playlist_{0:00}.m3u", Index));
+            var ListFile = GetPlaylistFile(Index);
+            var AltListFile = Path.ChangeExtension(ListFile, ".m3u");
             if (File.Exists(ListFile))
             {
                 Playlists[Index] = Playlist.FromString(File.ReadAllText(ListFile));
@@ -86,7 +95,7 @@ namespace DVMusicEdit
         /// </summary>
         public void ReloadRadioList()
         {
-            var RadioList = Path.Combine(MusicRootPath, "Radio.pls");
+            var RadioList = GetPlaylistFile(0);
 
             if (File.Exists(RadioList))
             {
@@ -107,6 +116,39 @@ namespace DVMusicEdit
             {
                 SetList(i);
             }
+        }
+
+        public bool SaveLists()
+        {
+            var OK = true;
+            for (var i = 0; i < Playlists.Length; i++)
+            {
+                var ListFile = GetPlaylistFile(i);
+                var Current = Playlists[i];
+                if (Current != null && Current.Entries.Length > 0)
+                {
+                    try
+                    {
+                        File.WriteAllText(ListFile, Current.Serialize());
+                    }
+                    catch
+                    {
+                        OK = false;
+                    }
+                }
+                else if (File.Exists(ListFile))
+                {
+                    try
+                    {
+                        File.Delete(ListFile);
+                    }
+                    catch
+                    {
+                        OK = false;
+                    }
+                }
+            }
+            return OK;
         }
     }
 }

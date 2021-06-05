@@ -46,6 +46,8 @@ namespace DVMusicEdit
             this.cmsAddYoutube = new System.Windows.Forms.ToolStripMenuItem();
             this.btnReset = new System.Windows.Forms.Button();
             this.btnPlay = new System.Windows.Forms.Button();
+            this.OFD = new System.Windows.Forms.OpenFileDialog();
+            this.btnEdit = new System.Windows.Forms.Button();
             this.CmsAdd.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -143,8 +145,9 @@ namespace DVMusicEdit
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(75, 23);
             this.btnSave.TabIndex = 6;
-            this.btnSave.Text = "&Save all";
+            this.btnSave.Text = "&Save all...";
             this.btnSave.UseVisualStyleBackColor = true;
+            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
             // CmsAdd
             // 
@@ -195,6 +198,23 @@ namespace DVMusicEdit
             this.btnPlay.UseVisualStyleBackColor = true;
             this.btnPlay.Click += new System.EventHandler(this.btnPlay_Click);
             // 
+            // OFD
+            // 
+            this.OFD.Filter = "Common media files|*.mp3;*.ogg;*.wav;*.webm;*.mp4;*.flac;*.aac|All files|*.*";
+            this.OFD.Multiselect = true;
+            this.OFD.Title = "Select media files";
+            // 
+            // btnEdit
+            // 
+            this.btnEdit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnEdit.Location = new System.Drawing.Point(184, 287);
+            this.btnEdit.Name = "btnEdit";
+            this.btnEdit.Size = new System.Drawing.Size(75, 23);
+            this.btnEdit.TabIndex = 2;
+            this.btnEdit.Text = "&Edit";
+            this.btnEdit.UseVisualStyleBackColor = true;
+            this.btnEdit.Click += new System.EventHandler(this.btnEdit_Click);
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -205,6 +225,7 @@ namespace DVMusicEdit
             this.Controls.Add(this.btnDown);
             this.Controls.Add(this.btnUp);
             this.Controls.Add(this.btnDelete);
+            this.Controls.Add(this.btnEdit);
             this.Controls.Add(this.btnPlay);
             this.Controls.Add(this.btnAdd);
             this.Controls.Add(this.lvPlaylist);
@@ -234,6 +255,8 @@ namespace DVMusicEdit
         private System.Windows.Forms.ToolStripMenuItem cmsAddYoutube;
         private System.Windows.Forms.Button btnReset;
         private System.Windows.Forms.Button btnPlay;
+        private System.Windows.Forms.OpenFileDialog OFD;
+        private System.Windows.Forms.Button btnEdit;
     }
 }
 

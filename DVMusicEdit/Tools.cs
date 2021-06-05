@@ -30,9 +30,24 @@ namespace DVMusicEdit
             MessageBox.Show(Msg, Title, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
         }
 
-        public static DialogResult AskWarn(string Msg, string Title)
+        public static bool AskWarn(string Msg, string Title)
         {
-            return MessageBox.Show(Msg, Title, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+            return MessageBox.Show(Msg, Title, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes;
+        }
+
+        public static bool AskInfo(string Msg, string Title)
+        {
+            return MessageBox.Show(Msg, Title, MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes;
+        }
+
+        public static bool AskError(string Msg, string Title)
+        {
+            return MessageBox.Show(Msg, Title, MessageBoxButtons.YesNo, MessageBoxIcon.Error) == DialogResult.Yes;
+        }
+
+        public static void Error(string Msg, string Title)
+        {
+            MessageBox.Show(Msg, Title, MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 }
