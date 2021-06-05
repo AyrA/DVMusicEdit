@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -135,6 +136,23 @@ namespace DVMusicEdit
                 else
                 {
                     P.AddItem(tempFilename, -1, tempTitle);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Creates relative file paths
+        /// </summary>
+        /// <param name="PlaylistFile">Playlist file name and path</param>
+        public void CreateRelativePaths(string PlaylistFile)
+        {
+            for (var i = 0; i < _entries.Count; i++)
+            {
+                var N = _entries[i].FileName;
+                //Don't bother if it's already relative
+                if (Path.IsPathRooted(N))
+                {
+                    _entries[i].FileName = Tools.MakeRelative(N, PlaylistFile);
                 }
             }
         }

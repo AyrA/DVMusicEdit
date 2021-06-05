@@ -114,6 +114,7 @@ namespace DVMusicEdit
             {
                 Playlists[Index] = new Playlist();
             }
+            Playlists[Index].CreateRelativePaths(ListFile);
         }
 
         /// <summary>
