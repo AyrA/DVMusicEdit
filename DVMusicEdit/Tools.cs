@@ -90,11 +90,11 @@ namespace DVMusicEdit
             AttrObject &= FileAttributes.Directory | FileAttributes.Normal;
 
             var Relative = new StringBuilder(MAX_PATH);
-            bool bRet = PathRelativePathTo(
-                Relative,
-                BasePath, FileAttributes.Directory,
-                PathToObject, AttrObject
-            );
+            if(!PathRelativePathTo(Relative,BasePath, FileAttributes.Directory,PathToObject, AttrObject))
+            {
+                //Return original path if problems arise
+                return PathToObject;
+            }
             var Parsed = Relative.ToString();
             //Remove leading ".\" if it's there
             if (Parsed.StartsWith($".{Path.DirectorySeparatorChar}"))

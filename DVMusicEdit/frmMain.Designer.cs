@@ -65,7 +65,7 @@ namespace DVMusicEdit
             this.lbPlaylists.Name = "lbPlaylists";
             this.lbPlaylists.Size = new System.Drawing.Size(120, 316);
             this.lbPlaylists.TabIndex = 0;
-            this.lbPlaylists.SelectedIndexChanged += new System.EventHandler(this.lbPlaylists_SelectedIndexChanged);
+            this.lbPlaylists.SelectedIndexChanged += new System.EventHandler(this.LbPlaylists_SelectedIndexChanged);
             // 
             // lvPlaylist
             // 
@@ -84,8 +84,8 @@ namespace DVMusicEdit
             this.lvPlaylist.TabIndex = 1;
             this.lvPlaylist.UseCompatibleStateImageBehavior = false;
             this.lvPlaylist.View = System.Windows.Forms.View.Details;
-            this.lvPlaylist.DoubleClick += new System.EventHandler(this.lvPlaylist_DoubleClick);
-            this.lvPlaylist.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lvPlaylist_KeyDown);
+            this.lvPlaylist.DoubleClick += new System.EventHandler(this.LvPlaylist_DoubleClick);
+            this.lvPlaylist.KeyDown += new System.Windows.Forms.KeyEventHandler(this.LvPlaylist_KeyDown);
             // 
             // chFile
             // 
@@ -110,7 +110,7 @@ namespace DVMusicEdit
             this.btnAdd.TabIndex = 3;
             this.btnAdd.Text = "&Add";
             this.btnAdd.UseVisualStyleBackColor = true;
-            this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
+            this.btnAdd.Click += new System.EventHandler(this.BtnAdd_Click);
             // 
             // btnDelete
             // 
@@ -121,7 +121,7 @@ namespace DVMusicEdit
             this.btnDelete.TabIndex = 5;
             this.btnDelete.Text = "&Delete";
             this.btnDelete.UseVisualStyleBackColor = true;
-            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
+            this.btnDelete.Click += new System.EventHandler(this.BtnDelete_Click);
             // 
             // btnUp
             // 
@@ -132,7 +132,7 @@ namespace DVMusicEdit
             this.btnUp.TabIndex = 6;
             this.btnUp.Text = "Move &Up";
             this.btnUp.UseVisualStyleBackColor = true;
-            this.btnUp.Click += new System.EventHandler(this.btnUp_Click);
+            this.btnUp.Click += new System.EventHandler(this.BtnUp_Click);
             // 
             // btnDown
             // 
@@ -143,7 +143,7 @@ namespace DVMusicEdit
             this.btnDown.TabIndex = 7;
             this.btnDown.Text = "&Move Down";
             this.btnDown.UseVisualStyleBackColor = true;
-            this.btnDown.Click += new System.EventHandler(this.btnDown_Click);
+            this.btnDown.Click += new System.EventHandler(this.BtnDown_Click);
             // 
             // btnSave
             // 
@@ -154,7 +154,7 @@ namespace DVMusicEdit
             this.btnSave.TabIndex = 10;
             this.btnSave.Text = "&Save all...";
             this.btnSave.UseVisualStyleBackColor = true;
-            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+            this.btnSave.Click += new System.EventHandler(this.BtnSave_Click);
             // 
             // CmsAdd
             // 
@@ -170,21 +170,21 @@ namespace DVMusicEdit
             this.cmsAddLocal.Name = "cmsAddLocal";
             this.cmsAddLocal.Size = new System.Drawing.Size(190, 22);
             this.cmsAddLocal.Text = "Browse for local &file(s)";
-            this.cmsAddLocal.Click += new System.EventHandler(this.cmsAddLocal_Click);
+            this.cmsAddLocal.Click += new System.EventHandler(this.CmsAddLocal_Click);
             // 
             // cmsAddStream
             // 
             this.cmsAddStream.Name = "cmsAddStream";
             this.cmsAddStream.Size = new System.Drawing.Size(190, 22);
             this.cmsAddStream.Text = "Add &HTTP stream";
-            this.cmsAddStream.Click += new System.EventHandler(this.cmsAddStream_Click);
+            this.cmsAddStream.Click += new System.EventHandler(this.CmsAddStream_Click);
             // 
             // cmsAddYoutube
             // 
             this.cmsAddYoutube.Name = "cmsAddYoutube";
             this.cmsAddYoutube.Size = new System.Drawing.Size(190, 22);
             this.cmsAddYoutube.Text = "Import from &Youtube";
-            this.cmsAddYoutube.Click += new System.EventHandler(this.cmsAddYoutube_Click);
+            this.cmsAddYoutube.Click += new System.EventHandler(this.CmsAddYoutube_Click);
             // 
             // btnReset
             // 
@@ -195,7 +195,7 @@ namespace DVMusicEdit
             this.btnReset.TabIndex = 9;
             this.btnReset.Text = "&Reset...";
             this.btnReset.UseVisualStyleBackColor = true;
-            this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
+            this.btnReset.Click += new System.EventHandler(this.BtnReset_Click);
             // 
             // btnPlay
             // 
@@ -206,7 +206,7 @@ namespace DVMusicEdit
             this.btnPlay.TabIndex = 2;
             this.btnPlay.Text = "&Play";
             this.btnPlay.UseVisualStyleBackColor = true;
-            this.btnPlay.Click += new System.EventHandler(this.btnPlay_Click);
+            this.btnPlay.Click += new System.EventHandler(this.BtnPlay_Click);
             // 
             // OFD
             // 
@@ -223,7 +223,7 @@ namespace DVMusicEdit
             this.btnEdit.TabIndex = 4;
             this.btnEdit.Text = "&Edit";
             this.btnEdit.UseVisualStyleBackColor = true;
-            this.btnEdit.Click += new System.EventHandler(this.btnEdit_Click);
+            this.btnEdit.Click += new System.EventHandler(this.BtnEdit_Click);
             // 
             // btnMore
             // 
@@ -234,7 +234,7 @@ namespace DVMusicEdit
             this.btnMore.TabIndex = 8;
             this.btnMore.Text = "M&ore...";
             this.btnMore.UseVisualStyleBackColor = true;
-            this.btnMore.Click += new System.EventHandler(this.btnMore_Click);
+            this.btnMore.Click += new System.EventHandler(this.BtnMore_Click);
             // 
             // CmsMore
             // 
@@ -249,14 +249,14 @@ namespace DVMusicEdit
             this.cmsDownloadFfmpeg.Name = "cmsDownloadFfmpeg";
             this.cmsDownloadFfmpeg.Size = new System.Drawing.Size(190, 22);
             this.cmsDownloadFfmpeg.Text = "Download &Ffmpeg";
-            this.cmsDownloadFfmpeg.Click += new System.EventHandler(this.cmsDownloadFfmpeg_Click);
+            this.cmsDownloadFfmpeg.Click += new System.EventHandler(this.CmsDownloadFfmpeg_Click);
             // 
             // cmsDownloadYoutubedl
             // 
             this.cmsDownloadYoutubedl.Name = "cmsDownloadYoutubedl";
             this.cmsDownloadYoutubedl.Size = new System.Drawing.Size(190, 22);
             this.cmsDownloadYoutubedl.Text = "Download &Youtube-dl";
-            this.cmsDownloadYoutubedl.Click += new System.EventHandler(this.cmsDownloadYoutubedl_Click);
+            this.cmsDownloadYoutubedl.Click += new System.EventHandler(this.CmsDownloadYoutubedl_Click);
             // 
             // frmMain
             // 
@@ -278,7 +278,7 @@ namespace DVMusicEdit
             this.MinimumSize = new System.Drawing.Size(700, 300);
             this.Name = "frmMain";
             this.Text = "Derail Valley Playlist Manager";
-            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.frmMain_KeyDown);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FrmMain_KeyDown);
             this.CmsAdd.ResumeLayout(false);
             this.CmsMore.ResumeLayout(false);
             this.ResumeLayout(false);

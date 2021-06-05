@@ -52,7 +52,7 @@ namespace DVMusicEdit
             this.btnCancel.TabIndex = 1;
             this.btnCancel.Text = "&Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
-            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
+            this.btnCancel.Click += new System.EventHandler(this.BtnCancel_Click);
             // 
             // frmDownload
             // 
@@ -67,7 +67,7 @@ namespace DVMusicEdit
             this.Name = "frmDownload";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Download";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmDownload_FormClosing);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FrmDownload_FormClosing);
             this.ResumeLayout(false);
 
         }

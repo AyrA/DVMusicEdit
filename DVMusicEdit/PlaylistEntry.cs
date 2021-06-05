@@ -89,8 +89,10 @@ namespace DVMusicEdit
             {
                 throw new ArgumentOutOfRangeException(nameof(PlaylistIndex), "Index must be 1 or bigger");
             }
-            var segments = new List<string>();
-            segments.Add($"File{PlaylistIndex}={FileName}");
+            var segments = new List<string>
+            {
+                $"File{PlaylistIndex}={FileName}"
+            };
             if (Duration > 0)
             {
                 segments.Add($"Length{PlaylistIndex}={Duration}");

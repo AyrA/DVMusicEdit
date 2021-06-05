@@ -7,7 +7,7 @@ namespace DVMusicEdit
     public partial class frmEntry : Form
     {
         public PlaylistEntry EditItem { get; private set; }
-        private string PlaylistFile;
+        private readonly string PlaylistFile;
 
         public frmEntry(PlaylistEntry Entry, string PlaylistDir)
         {
@@ -36,7 +36,7 @@ namespace DVMusicEdit
             Tools.Error("FFmpeg has not been downloaded yet. Use the \"More\" button in the main window to do so.", Text);
         }
 
-        private void btnDetect_Click(object sender, EventArgs e)
+        private void BtnDetect_Click(object sender, EventArgs e)
         {
             if (EditItem.IsStream)
             {
@@ -59,13 +59,13 @@ namespace DVMusicEdit
             }
         }
 
-        private void btnOK_Click(object sender, EventArgs e)
+        private void BtnOK_Click(object sender, EventArgs e)
         {
             EditItem.Duration = (int)nudDuration.Value;
             EditItem.Title = tbTitle.Text;
         }
 
-        private void btnPlay_Click(object sender, EventArgs e)
+        private void BtnPlay_Click(object sender, EventArgs e)
         {
             if(!FFmpeg.IsReady)
             {

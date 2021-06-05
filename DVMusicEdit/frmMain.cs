@@ -12,7 +12,6 @@ namespace DVMusicEdit
             Tape
         }
 
-        private string DerailValleyPath;
         private DerailValley DV;
 
         private Playlist CurrentList
@@ -35,7 +34,6 @@ namespace DVMusicEdit
 
         private void SelectDV(string DVRoot)
         {
-            DerailValleyPath = DVRoot;
             DV = new DerailValley(DVRoot);
             InitDV();
         }
@@ -67,21 +65,6 @@ namespace DVMusicEdit
             btnAdd.Enabled = btnDelete.Enabled =
                 btnUp.Enabled = btnDown.Enabled =
                 btnReset.Enabled = btnSave.Enabled = enabled;
-        }
-
-        private void lbPlaylists_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (lbPlaylists.SelectedIndex >= 0)
-            {
-                var PL = CurrentList;
-                RenderList(PL);
-                SetListFunction(lbPlaylists.SelectedIndex == 0 ? PlaylistType.Radio : PlaylistType.Tape);
-                SetEditControls(true);
-            }
-            else
-            {
-                SetEditControls(false);
-            }
         }
 
         private void SetListFunction(PlaylistType ListType)
@@ -346,33 +329,48 @@ Do not close this application or you lose your changes.", "Failed to save files"
 
         #region Form event handler
 
-        private void btnAdd_Click(object sender, EventArgs e)
+        private void LbPlaylists_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (lbPlaylists.SelectedIndex >= 0)
+            {
+                var PL = CurrentList;
+                RenderList(PL);
+                SetListFunction(lbPlaylists.SelectedIndex == 0 ? PlaylistType.Radio : PlaylistType.Tape);
+                SetEditControls(true);
+            }
+            else
+            {
+                SetEditControls(false);
+            }
+        }
+
+        private void BtnAdd_Click(object sender, EventArgs e)
         {
             CmsAdd.Show(btnAdd, new System.Drawing.Point(0, btnAdd.Height));
         }
 
-        private void btnDelete_Click(object sender, EventArgs e)
+        private void BtnDelete_Click(object sender, EventArgs e)
         {
             DeleteSelectedItems();
         }
 
-        private void btnUp_Click(object sender, EventArgs e)
+        private void BtnUp_Click(object sender, EventArgs e)
         {
             MoveEntriesUp();
         }
 
-        private void btnDown_Click(object sender, EventArgs e)
+        private void BtnDown_Click(object sender, EventArgs e)
         {
             MoveEntriesDown();
 
         }
 
-        private void btnReset_Click(object sender, EventArgs e)
+        private void BtnReset_Click(object sender, EventArgs e)
         {
             ResetPlaylists();
         }
 
-        private void btnPlay_Click(object sender, EventArgs e)
+        private void BtnPlay_Click(object sender, EventArgs e)
         {
             if (lvPlaylist.SelectedItems.Count == 0)
             {
@@ -389,17 +387,17 @@ Do not close this application or you lose your changes.", "Failed to save files"
             }
         }
 
-        private void btnEdit_Click(object sender, EventArgs e)
+        private void BtnEdit_Click(object sender, EventArgs e)
         {
             EditEntry();
         }
 
-        private void btnSave_Click(object sender, EventArgs e)
+        private void BtnSave_Click(object sender, EventArgs e)
         {
             SavePlaylists();
         }
 
-        private void cmsAddLocal_Click(object sender, EventArgs e)
+        private void CmsAddLocal_Click(object sender, EventArgs e)
         {
             if (OFD.ShowDialog() == DialogResult.OK)
             {
@@ -430,7 +428,7 @@ Do not close this application or you lose your changes.", "Failed to save files"
             }
         }
 
-        private void cmsAddStream_Click(object sender, EventArgs e)
+        private void CmsAddStream_Click(object sender, EventArgs e)
         {
             var Radio = DV.Playlists[0];
             if (Clipboard.ContainsText())
@@ -472,12 +470,12 @@ Do not close this application or you lose your changes.", "Failed to save files"
             }
         }
 
-        private void cmsAddYoutube_Click(object sender, EventArgs e)
+        private void CmsAddYoutube_Click(object sender, EventArgs e)
         {
             Tools.Error("This is currently not implemented and will be part of a later version", "Missing feature");
         }
 
-        private void lvPlaylist_DoubleClick(object sender, EventArgs e)
+        private void LvPlaylist_DoubleClick(object sender, EventArgs e)
         {
             var Item = lvPlaylist.SelectedItems.OfType<ListViewItem>().FirstOrDefault();
             if (Item != null)
@@ -486,7 +484,7 @@ Do not close this application or you lose your changes.", "Failed to save files"
             }
         }
 
-        private void lvPlaylist_KeyDown(object sender, KeyEventArgs e)
+        private void LvPlaylist_KeyDown(object sender, KeyEventArgs e)
         {
             //Return early if no playlist is selected
             if (lbPlaylists.SelectedIndex < 0)
@@ -530,7 +528,7 @@ Do not close this application or you lose your changes.", "Failed to save files"
             }
         }
 
-        private void frmMain_KeyDown(object sender, KeyEventArgs e)
+        private void FrmMain_KeyDown(object sender, KeyEventArgs e)
         {
             switch (e.KeyCode)
             {
@@ -551,12 +549,12 @@ Do not close this application or you lose your changes.", "Failed to save files"
             }
         }
 
-        private void btnMore_Click(object sender, EventArgs e)
+        private void BtnMore_Click(object sender, EventArgs e)
         {
             CmsMore.Show(btnMore, new System.Drawing.Point(0, btnMore.Height));
         }
 
-        private void cmsDownloadFfmpeg_Click(object sender, EventArgs e)
+        private void CmsDownloadFfmpeg_Click(object sender, EventArgs e)
         {
             if (!FFmpeg.IsReady || Tools.AskWarn("FFmpeg already exists. Do you want to delete it and download it again?\r\nDo this only if the tools seems to not be working.", "Overwrite FFmpeg"))
             {
@@ -587,7 +585,7 @@ Error: " + ex.Message, "Cannot delete existing files");
             }
         }
 
-        private void cmsDownloadYoutubedl_Click(object sender, EventArgs e)
+        private void CmsDownloadYoutubedl_Click(object sender, EventArgs e)
         {
             Tools.Error("This is currently not implemented and will be part of a later version", "Missing feature");
         }

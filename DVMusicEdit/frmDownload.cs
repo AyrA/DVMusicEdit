@@ -14,8 +14,8 @@ namespace DVMusicEdit
 {
     public partial class frmDownload : Form
     {
-        private WebClient WC;
-        private string Filename;
+        private readonly WebClient WC;
+        private readonly string Filename;
 
         public frmDownload(Uri URL, string Destination)
         {
@@ -67,12 +67,12 @@ namespace DVMusicEdit
             }
         }
 
-        private void btnCancel_Click(object sender, EventArgs e)
+        private void BtnCancel_Click(object sender, EventArgs e)
         {
             Close();
         }
 
-        private void frmDownload_FormClosing(object sender, FormClosingEventArgs e)
+        private void FrmDownload_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (WC.IsBusy && !Tools.AskWarn("Abort the current download?", "Download in progress"))
             {

@@ -9,7 +9,7 @@ namespace DVMusicEdit
 {
     public class Playlist
     {
-        private List<PlaylistEntry> _entries;
+        private readonly List<PlaylistEntry> _entries;
 
         public PlaylistEntry[] Entries { get => _entries.ToArray(); }
 
@@ -81,9 +81,8 @@ namespace DVMusicEdit
             {
                 throw new FormatException($"Incompatible playlist version. Expected 2, got {v}");
             }
-            string countTemp;
             int count;
-            if (!Parsed.TryGetValue("numberofentries", out countTemp))
+            if (!Parsed.TryGetValue("numberofentries", out string countTemp))
             {
                 count = -1;
                 //Guess the count

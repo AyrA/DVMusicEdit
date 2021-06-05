@@ -48,7 +48,7 @@ namespace DVMusicEdit
             this.btnDetect.TabIndex = 2;
             this.btnDetect.Text = "Detect...";
             this.btnDetect.UseVisualStyleBackColor = true;
-            this.btnDetect.Click += new System.EventHandler(this.btnDetect_Click);
+            this.btnDetect.Click += new System.EventHandler(this.BtnDetect_Click);
             // 
             // tbTitle
             // 
@@ -94,7 +94,7 @@ namespace DVMusicEdit
             this.btnOK.TabIndex = 5;
             this.btnOK.Text = "&OK";
             this.btnOK.UseVisualStyleBackColor = true;
-            this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
+            this.btnOK.Click += new System.EventHandler(this.BtnOK_Click);
             // 
             // btnCancel
             // 
@@ -116,7 +116,7 @@ namespace DVMusicEdit
             this.btnPlay.TabIndex = 5;
             this.btnPlay.Text = "&Play";
             this.btnPlay.UseVisualStyleBackColor = true;
-            this.btnPlay.Click += new System.EventHandler(this.btnPlay_Click);
+            this.btnPlay.Click += new System.EventHandler(this.BtnPlay_Click);
             // 
             // frmEntry
             // 
