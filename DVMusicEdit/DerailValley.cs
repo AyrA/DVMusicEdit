@@ -11,10 +11,10 @@ namespace DVMusicEdit
     {
         private const int LIST_SIZE = 11;
 
-        private static string[] AcceptedExtensions = { ".ogg", ".mp3" };
+        private static readonly string[] AcceptedExtensions = { ".ogg", ".mp3" };
 
-        private readonly string MusicRootPath;
-        private readonly string ConvertPath;
+        public readonly string MusicRootPath;
+        public readonly string ConvertPath;
 
         public Playlist[] Playlists { get; private set; }
 

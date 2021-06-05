@@ -353,7 +353,8 @@ Do not close this application or you lose your changes.", "Failed to save files"
             }
             if (RequireFfmpeg())
             {
-                FFmpeg.PlayFileOrStream(lvPlaylist.SelectedItems[0].Text);
+                var FullPath = CurrentList.Entries[lvPlaylist.SelectedItems[0].Index].GetFullPath(DV.MusicRootPath + System.IO.Path.DirectorySeparatorChar + "current");
+                FFmpeg.PlayFileOrStream(FullPath);
             }
         }
 
