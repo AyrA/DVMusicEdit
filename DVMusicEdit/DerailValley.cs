@@ -11,16 +11,39 @@ namespace DVMusicEdit
     {
         private const int LIST_SIZE = 11;
         private readonly string MusicRootPath;
+        private readonly string ConvertPath;
 
         public Playlist[] Playlists { get; private set; }
 
         public DerailValley(string MainFolder)
         {
             MusicRootPath = Path.Combine(MainFolder, "DerailValley_Data", "StreamingAssets", "music");
+            ConvertPath = Path.Combine(MusicRootPath, "converted");
             if (!Directory.Exists(MusicRootPath))
             {
                 throw new DirectoryNotFoundException($"Not found: {MusicRootPath}");
             }
+            if (!Directory.Exists(ConvertPath))
+            {
+                Directory.CreateDirectory(ConvertPath);
+            }
+        }
+
+        /// <summary>
+        /// Gets a file name that is free for use as conversion target
+        /// </summary>
+        /// <param name="SourceFilename">Original file name (path not necessary)</param>
+        /// <returns>Full file name for conversion target</returns>
+        public string GetConvertedFilename(string SourceFilename)
+        {
+            var Basename = Path.GetFileNameWithoutExtension(SourceFilename) + ".ogg";
+            var FullPath = Path.Combine(ConvertPath, Basename);
+            int Count = 1;
+            while (File.Exists(FullPath))
+            {
+                FullPath = Path.Combine(ConvertPath, Path.GetFileNameWithoutExtension(Basename) + $"_{Count++}.ogg");
+            }
+            return FullPath;
         }
 
         /// <summary>
