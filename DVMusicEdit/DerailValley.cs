@@ -107,12 +107,12 @@ namespace DVMusicEdit
                 }
                 catch
                 {
-                    Playlists[Index] = null;
+                    Playlists[Index] = new Playlist();
                 }
             }
             else
             {
-                Playlists[Index] = null;
+                Playlists[Index] = new Playlist();
             }
         }
 
