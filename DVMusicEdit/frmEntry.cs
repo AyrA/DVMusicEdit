@@ -31,7 +31,7 @@ namespace DVMusicEdit
         {
             if (EditItem.IsStream)
             {
-                Tools.Warn("We cannot get the length of a network stream.", Text);
+                Tools.Info("Network streams have no length.", Text);
             }
             else
             {
