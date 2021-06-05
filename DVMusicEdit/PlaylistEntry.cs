@@ -35,41 +35,43 @@ namespace DVMusicEdit
         /// <summary>
         /// Checks if the mentioned file exists relative to the playlist file
         /// </summary>
-        /// <param name="PlaylistFilePath">Full path and name of the playlist file</param>
+        /// <param name="PlaylistFileDir">Full path and name of the playlist file</param>
         /// <returns>true, if file exists</returns>
-        public bool Exists(string PlaylistFilePath)
+        public bool Exists(string PlaylistFileDir)
         {
-            if (string.IsNullOrEmpty(PlaylistFilePath))
+            if (string.IsNullOrEmpty(PlaylistFileDir))
             {
-                throw new ArgumentNullException(nameof(PlaylistFilePath));
+                throw new ArgumentNullException(nameof(PlaylistFileDir));
             }
             if (string.IsNullOrEmpty(FileName))
             {
                 throw new InvalidOperationException("FileName property must be specified");
             }
-            return File.Exists(GetFullPath(PlaylistFilePath));
+            return File.Exists(GetFullPath(PlaylistFileDir));
         }
 
         /// <summary>
         /// Gets the absolute path of the <see cref="FileName"/>
         /// </summary>
-        /// <param name="PlaylistFilePath">Full path and name of the playlist file</param>
+        /// <param name="PlaylistFileDirectory">
+        /// Full path and name of the playlist directory (without the playlist file name)
+        /// </param>
         /// <returns>Absolute path</returns>
         /// <remarks>
         /// This will not check if the file actually exists.
         /// Use <see cref="Exists(string)"/> instead.
         /// </remarks>
-        public string GetFullPath(string PlaylistFilePath)
+        public string GetFullPath(string PlaylistFileDirectory)
         {
-            if (string.IsNullOrEmpty(PlaylistFilePath))
+            if (string.IsNullOrEmpty(PlaylistFileDirectory))
             {
-                throw new ArgumentNullException(nameof(PlaylistFilePath));
+                throw new ArgumentNullException(nameof(PlaylistFileDirectory));
             }
             if (string.IsNullOrEmpty(FileName))
             {
                 throw new InvalidOperationException("FileName property must be specified");
             }
-            return Path.Combine(Path.GetDirectoryName(PlaylistFilePath), FileName);
+            return Path.Combine(PlaylistFileDirectory, FileName);
         }
 
         /// <summary>
