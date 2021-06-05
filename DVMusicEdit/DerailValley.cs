@@ -12,8 +12,13 @@ namespace DVMusicEdit
         private const int LIST_SIZE = 11;
 
         private static readonly string[] AcceptedExtensions = { ".ogg", ".mp3" };
-
+        /// <summary>
+        /// Directory that holds the playlist files
+        /// </summary>
         public readonly string MusicRootPath;
+        /// <summary>
+        /// Directory that holds converted files
+        /// </summary>
         public readonly string ConvertPath;
 
         public Playlist[] Playlists { get; private set; }
