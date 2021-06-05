@@ -109,7 +109,7 @@ namespace DVMusicEdit
                 StartInfo = new ProcessStartInfo()
                 {
                     FileName = ConverterPath,
-                    Arguments = $"-i \"{Source}\" -codec:a libvorbis -vn -qscale:a 5 \"{Destination}\"",
+                    Arguments = $"-i \"{Source}\" -codec:a libvorbis -vn -qscale:a 5 -y \"{Destination}\"",
                     UseShellExecute = false,
                     RedirectStandardOutput = true,
                     CreateNoWindow = true
