@@ -15,6 +15,14 @@ namespace DVMusicEdit
         private string DerailValleyPath;
         private DerailValley DV;
 
+        private Playlist CurrentList
+        {
+            get
+            {
+                return lbPlaylists.SelectedIndex < 0 ? null : DV.Playlists[lbPlaylists.SelectedIndex];
+            }
+        }
+
         public frmMain(string DVRoot)
         {
             InitializeComponent();
@@ -65,7 +73,7 @@ namespace DVMusicEdit
         {
             if (lbPlaylists.SelectedIndex >= 0)
             {
-                var PL = DV.Playlists[lbPlaylists.SelectedIndex];
+                var PL = CurrentList;
                 RenderList(PL);
                 SetListFunction(lbPlaylists.SelectedIndex == 0 ? PlaylistType.Radio : PlaylistType.Tape);
                 SetEditControls(true);
@@ -172,8 +180,7 @@ namespace DVMusicEdit
                 Tools.Info("Only the first selected file will be edited", "Multiple files selected");
             }
             var Index = lvPlaylist.SelectedItems[0].Index;
-            var List = DV.Playlists[lbPlaylists.SelectedIndex];
-            EditEntry(List, Index);
+            EditEntry(CurrentList, Index);
         }
 
         private void EditEntry(Playlist List, int Index)
@@ -199,7 +206,7 @@ namespace DVMusicEdit
                             .OfType<int>()
                             .OrderBy(m => m)
                             .ToArray();
-            var PL = DV.Playlists[lbPlaylists.SelectedIndex];
+            var PL = CurrentList;
             if (Indexes.Contains(0))
             {
                 Tools.Warn("Cannot move first item further up", "Cannot move first item");
@@ -232,7 +239,7 @@ namespace DVMusicEdit
             }
             else
             {
-                var PL = DV.Playlists[lbPlaylists.SelectedIndex];
+                var PL = CurrentList;
                 foreach (var I in Indexes)
                 {
                     PL.MoveDown(I);
@@ -253,7 +260,7 @@ namespace DVMusicEdit
                             .OrderBy(m => m)
                             .Reverse()
                             .ToArray();
-            var PL = DV.Playlists[lbPlaylists.SelectedIndex];
+            var PL = CurrentList;
             foreach (var I in Indexes)
             {
                 PL.RemoveItem(I);
@@ -275,7 +282,7 @@ namespace DVMusicEdit
                     {
                         DV.ReloadRadioList();
                     }
-                    RenderList(DV.Playlists[lbPlaylists.SelectedIndex]);
+                    RenderList(CurrentList);
                 }
             }
         }
@@ -292,12 +299,12 @@ Try to close any media player that may be accessing the lists and make sure dera
 Do not close this application or you lose your changes.", "Failed to save files");
                 }
                 //Keep note of where the user was
-                var CurrentList = lbPlaylists.SelectedIndex;
+                var CurrentListIndex = lbPlaylists.SelectedIndex;
                 var CurrentItems = lvPlaylist.SelectedIndices.OfType<int>().ToArray();
                 InitDV();
                 //Restore user position
-                RenderList(DV.Playlists[CurrentList]);
-                lbPlaylists.SelectedIndex = CurrentList;
+                lbPlaylists.SelectedIndex = CurrentListIndex;
+                RenderList(CurrentList);
                 foreach (var Index in CurrentItems)
                 {
                     if (lvPlaylist.Items.Count > Index)
@@ -365,10 +372,29 @@ Do not close this application or you lose your changes.", "Failed to save files"
             if (OFD.ShowDialog() == DialogResult.OK)
             {
                 var Files = (string[])OFD.FileNames.Clone();
-                if(Files.Any(DerailValley.IsAcceptedMediaType))
+                if (!Files.All(DerailValley.IsAcceptedMediaType))
                 {
-
+                    if (Tools.AskInfo("Some files are not usable by DerailValley directly and need conversion. Do you wan to convert these files? Selecting [no] will skip them", "Conversion required"))
+                    {
+                        if (RequireFfmpeg())
+                        {
+                            for (var i = 0; i < Files.Length; i++)
+                            {
+                                if (!DerailValley.IsAcceptedMediaType(Files[i]))
+                                {
+                                    var Dest = DV.GetConvertedFilename(Files[i]);
+                                    FFmpeg.ConvertToOgg(Files[i], Dest).WaitForExit();
+                                    Files[i] = Dest;
+                                }
+                            }
+                        }
+                    }
                 }
+                foreach (var Entry in Files.Where(DerailValley.IsAcceptedMediaType))
+                {
+                    CurrentList.AddItem(Entry);
+                }
+                RenderList(CurrentList);
             }
         }
 
@@ -424,7 +450,7 @@ Do not close this application or you lose your changes.", "Failed to save files"
             var Item = lvPlaylist.SelectedItems.OfType<ListViewItem>().FirstOrDefault();
             if (Item != null)
             {
-                EditEntry(DV.Playlists[lbPlaylists.SelectedIndex], Item.Index);
+                EditEntry(CurrentList, Item.Index);
             }
         }
 
