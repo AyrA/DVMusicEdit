@@ -20,7 +20,7 @@ namespace DVMusicEdit
             Application.SetCompatibleTextRenderingDefault(false);
             if (DV == null)
             {
-                MessageBox.Show("Could not locate Derail Valley in your steam library. Please select the install folder manually");
+                Tools.Info("Could not locate Derail Valley in your steam library. Please select the install folder manually", "Derail Valley not found");
             }
             Application.Run(new frmMain(DV));
         }
