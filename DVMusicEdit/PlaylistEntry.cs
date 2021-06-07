@@ -71,6 +71,10 @@ namespace DVMusicEdit
             {
                 throw new InvalidOperationException("FileName property must be specified");
             }
+            if (IsStream)
+            {
+                return FileName;
+            }
             return Path.Combine(PlaylistFileDirectory, FileName);
         }
 
