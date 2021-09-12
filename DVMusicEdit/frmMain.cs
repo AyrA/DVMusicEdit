@@ -25,7 +25,6 @@ namespace DVMusicEdit
         public frmMain(string DVRoot)
         {
             InitializeComponent();
-            Text += $" [{DVRoot}]";
             if (DVRoot != null)
             {
                 SelectDV(DVRoot);
@@ -34,6 +33,7 @@ namespace DVMusicEdit
 
         private void SelectDV(string DVRoot)
         {
+            Text += $" [{DVRoot}]";
             DV = new DerailValley(DVRoot);
             InitDV();
         }
@@ -576,7 +576,7 @@ Error: " + ex.Message, "Cannot delete existing files");
                 }
                 if (RequireFfmpeg(true))
                 {
-                    Tools.Info("FFmpeg has been downloaded","Download complete");
+                    Tools.Info("FFmpeg has been downloaded", "Download complete");
                 }
                 else
                 {
@@ -588,6 +588,33 @@ Error: " + ex.Message, "Cannot delete existing files");
         private void CmsDownloadYoutubedl_Click(object sender, EventArgs e)
         {
             Tools.Error("This is currently not implemented and will be part of a later version", "Missing feature");
+        }
+
+        private void frmMain_Shown(object sender, EventArgs e)
+        {
+            if (DV == null)
+            {
+                string DVRoot = null;
+                while (!DerailValley.IsDVDirectory(DVRoot))
+                {
+                    if (DVRoot != null)
+                    {
+                        Tools.Error("The directory doesn't seems to be a derail valley installation. Please select the directory that holds 'DerailValley.exe'", "Invalid directory");
+                    }
+                    if (FBD.ShowDialog() == DialogResult.OK)
+                    {
+                        DVRoot = FBD.SelectedPath;
+                    }
+                    else
+                    {
+                        Tools.Error("Operation was cancelled by the user. Application exits now", Text);
+                        Close();
+                        Environment.Exit(1);
+                        return;
+                    }
+                }
+                SelectDV(DVRoot);
+            }
         }
 
         #endregion

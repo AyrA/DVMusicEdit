@@ -52,6 +52,7 @@ namespace DVMusicEdit
             this.CmsMore = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.cmsDownloadFfmpeg = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsDownloadYoutubedl = new System.Windows.Forms.ToolStripMenuItem();
+            this.FBD = new System.Windows.Forms.FolderBrowserDialog();
             this.CmsAdd.SuspendLayout();
             this.CmsMore.SuspendLayout();
             this.SuspendLayout();
@@ -163,26 +164,26 @@ namespace DVMusicEdit
             this.cmsAddStream,
             this.cmsAddYoutube});
             this.CmsAdd.Name = "CmsAdd";
-            this.CmsAdd.Size = new System.Drawing.Size(191, 70);
+            this.CmsAdd.Size = new System.Drawing.Size(177, 70);
             // 
             // cmsAddLocal
             // 
             this.cmsAddLocal.Name = "cmsAddLocal";
-            this.cmsAddLocal.Size = new System.Drawing.Size(190, 22);
+            this.cmsAddLocal.Size = new System.Drawing.Size(176, 22);
             this.cmsAddLocal.Text = "Browse for local &file(s)";
             this.cmsAddLocal.Click += new System.EventHandler(this.CmsAddLocal_Click);
             // 
             // cmsAddStream
             // 
             this.cmsAddStream.Name = "cmsAddStream";
-            this.cmsAddStream.Size = new System.Drawing.Size(190, 22);
+            this.cmsAddStream.Size = new System.Drawing.Size(176, 22);
             this.cmsAddStream.Text = "Add &HTTP stream";
             this.cmsAddStream.Click += new System.EventHandler(this.CmsAddStream_Click);
             // 
             // cmsAddYoutube
             // 
             this.cmsAddYoutube.Name = "cmsAddYoutube";
-            this.cmsAddYoutube.Size = new System.Drawing.Size(190, 22);
+            this.cmsAddYoutube.Size = new System.Drawing.Size(176, 22);
             this.cmsAddYoutube.Text = "Import from &Youtube";
             this.cmsAddYoutube.Click += new System.EventHandler(this.CmsAddYoutube_Click);
             // 
@@ -242,21 +243,26 @@ namespace DVMusicEdit
             this.cmsDownloadFfmpeg,
             this.cmsDownloadYoutubedl});
             this.CmsMore.Name = "CmsMore";
-            this.CmsMore.Size = new System.Drawing.Size(191, 70);
+            this.CmsMore.Size = new System.Drawing.Size(177, 48);
             // 
             // cmsDownloadFfmpeg
             // 
             this.cmsDownloadFfmpeg.Name = "cmsDownloadFfmpeg";
-            this.cmsDownloadFfmpeg.Size = new System.Drawing.Size(190, 22);
+            this.cmsDownloadFfmpeg.Size = new System.Drawing.Size(176, 22);
             this.cmsDownloadFfmpeg.Text = "Download &Ffmpeg";
             this.cmsDownloadFfmpeg.Click += new System.EventHandler(this.CmsDownloadFfmpeg_Click);
             // 
             // cmsDownloadYoutubedl
             // 
             this.cmsDownloadYoutubedl.Name = "cmsDownloadYoutubedl";
-            this.cmsDownloadYoutubedl.Size = new System.Drawing.Size(190, 22);
+            this.cmsDownloadYoutubedl.Size = new System.Drawing.Size(176, 22);
             this.cmsDownloadYoutubedl.Text = "Download &Youtube-dl";
             this.cmsDownloadYoutubedl.Click += new System.EventHandler(this.CmsDownloadYoutubedl_Click);
+            // 
+            // FBD
+            // 
+            this.FBD.Description = "Select \"Derail Valley\" folder";
+            this.FBD.RootFolder = System.Environment.SpecialFolder.MyComputer;
             // 
             // frmMain
             // 
@@ -278,6 +284,7 @@ namespace DVMusicEdit
             this.MinimumSize = new System.Drawing.Size(700, 300);
             this.Name = "frmMain";
             this.Text = "Derail Valley Playlist Manager";
+            this.Shown += new System.EventHandler(this.frmMain_Shown);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FrmMain_KeyDown);
             this.CmsAdd.ResumeLayout(false);
             this.CmsMore.ResumeLayout(false);
@@ -309,6 +316,7 @@ namespace DVMusicEdit
         private System.Windows.Forms.ContextMenuStrip CmsMore;
         private System.Windows.Forms.ToolStripMenuItem cmsDownloadFfmpeg;
         private System.Windows.Forms.ToolStripMenuItem cmsDownloadYoutubedl;
+        private System.Windows.Forms.FolderBrowserDialog FBD;
     }
 }
 
