@@ -22,16 +22,25 @@ namespace DVMusicEdit
 
         public DerailValley(string MainFolder)
         {
-            MusicRootPath = Path.Combine(MainFolder, "DerailValley_Data", "StreamingAssets", "music");
-            ConvertPath = Path.Combine(MusicRootPath, "converted");
-            if (!Directory.Exists(MusicRootPath))
+            if (!IsDVDirectory(MainFolder))
             {
                 throw new DirectoryNotFoundException($"Not found: {MusicRootPath}");
             }
+            MusicRootPath = Path.Combine(MainFolder, "DerailValley_Data", "StreamingAssets", "music");
+            ConvertPath = Path.Combine(MusicRootPath, "converted");
             if (!Directory.Exists(ConvertPath))
             {
                 Directory.CreateDirectory(ConvertPath);
             }
+        }
+
+        public static bool IsDVDirectory(string MainFolder)
+        {
+            if (string.IsNullOrEmpty(MainFolder))
+            {
+                return false;
+            }
+            return File.Exists(Path.Combine(MainFolder, "DerailValley.exe"));
         }
 
         /// <summary>
