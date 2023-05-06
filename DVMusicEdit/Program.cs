@@ -13,9 +13,15 @@ namespace DVMusicEdit
         [STAThread]
         static void Main()
         {
-            var DV = Steam.Libraries
-                .Select(m => Path.Combine(m, "common", "Derail Valley"))
-                .FirstOrDefault(m => Directory.Exists(m));
+            //Try to find DV via registry first
+            var DV = Steam.FindDerailValley();
+            //If not found, scan all steam libraries
+            if (string.IsNullOrEmpty(DV))
+            {
+                DV = Steam.Libraries
+                    .Select(m => Path.Combine(m, "common", "Derail Valley"))
+                    .FirstOrDefault(m => Directory.Exists(m));
+            }
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             if (DV == null)
