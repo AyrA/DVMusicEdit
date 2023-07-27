@@ -76,7 +76,7 @@
     <Compile Include="PlaylistEntry.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Steam.cs" />
+    <Compile Include="DerailValleyFinder.cs" />
     <Compile Include="Tools.cs" />
     <EmbeddedResource Include="frmDownload.resx">
       <DependentUpon>frmDownload.cs</DependentUpon>
