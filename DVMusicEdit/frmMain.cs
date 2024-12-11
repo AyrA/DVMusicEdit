@@ -143,7 +143,6 @@ namespace DVMusicEdit
             var allOK = true;
             if (!FFmpeg.IsReady)
             {
-                var Tasks = FFmpeg.DownloadLinks.Where(m => m.DownloadRequired).ToArray();
                 if (!Silent)
                 {
                     Tools.Info("This operation needs FFmpeg but it's missing and will be downloaded now.", "FFmpeg required");
@@ -543,7 +542,7 @@ Do not close this application or you lose your changes.", "Failed to save files"
                     {
                         Tools.Error(@"Cannot delete the exsiting FFmpeg instance.
 Make sure no application has the ffmpeg directory open,
-and try to close ffmpeg.exe/ffplay.exe/ffprobe.exe instance via task manager.
+and try to close any open ffmpeg.exe/ffplay.exe/ffprobe.exe instance via task manager.
 
 Error: " + ex.Message, "Cannot delete existing files");
                         return;
