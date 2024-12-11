@@ -211,7 +211,8 @@ namespace DVMusicEdit
             // 
             // OFD
             // 
-            this.OFD.Filter = "Common media files|*.mp3;*.ogg;*.wav;*.webm;*.mp4;*.flac;*.aac|All files|*.*";
+            this.OFD.Filter = "Common media files|*.mp3;*.ogg;*.wav;*.webm;*.mp4;*.m4a;*.flac;*.aac|All files|*." +
+    "*";
             this.OFD.Multiselect = true;
             this.OFD.Title = "Select media files";
             // 
