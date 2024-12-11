@@ -1,40 +1,45 @@
 ﻿using System;
-using System.ComponentModel;
 using System.IO;
-using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace DVMusicEdit
 {
     public partial class frmDownload : Form
     {
-        private readonly WebClient WC;
-        private readonly string Filename;
+        private readonly CancellationTokenSource cts;
+        private readonly Task downloadTask;
 
-        public frmDownload(Uri URL, string Destination)
+        public frmDownload(Uri url)
         {
             InitializeComponent();
-            Filename = Destination;
-            Text += $" [{Path.GetFileName(Destination)}]";
-            WC = new WebClient();
-            WC.DownloadProgressChanged += WC_DownloadProgressChanged;
-            WC.DownloadFileCompleted += WC_DownloadFileCompleted;
-            WC.DownloadFileAsync(URL, Destination);
-        }
-
-        private void WC_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
-        {
-            EndDownload(!e.Cancelled && e.Error == null);
-        }
-
-        private void EndDownload(bool success)
-        {
-            if (InvokeRequired)
+            cts = new CancellationTokenSource();
+            downloadTask = ChainLoader.LoadAsync(
+                url,
+                Path.GetDirectoryName(Application.ExecutablePath),
+                StatusReport, cts.Token);
+            downloadTask.ContinueWith(task =>
             {
-                Invoke((MethodInvoker)delegate { EndDownload(success); });
+                Invoke((MethodInvoker)delegate
+                {
+                    DialogResult = task.IsFaulted ? DialogResult.Cancel : DialogResult.OK;
+                    Close();
+                });
+            });
+        }
+
+        private void StatusReport(string relativeName, string absoluteName, long loaded, long totalSize)
+        {
+            Text = $"Downloading '{relativeName}'";
+            if (totalSize == 0)
+            {
+                SetProgress(0);
             }
-            DialogResult = success ? DialogResult.OK : DialogResult.Cancel;
-            Close();
+            else
+            {
+                SetProgress((int)(loaded * 100 / totalSize));
+            }
         }
 
         private void SetProgress(int Percentage)
@@ -53,14 +58,6 @@ namespace DVMusicEdit
             }
         }
 
-        private void WC_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
-        {
-            if (e.TotalBytesToReceive > 0)
-            {
-                SetProgress(e.ProgressPercentage);
-            }
-        }
-
         private void BtnCancel_Click(object sender, EventArgs e)
         {
             Close();
@@ -68,29 +65,17 @@ namespace DVMusicEdit
 
         private void FrmDownload_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (WC.IsBusy && !Tools.AskWarn("Abort the current download?", "Download in progress"))
+            if (cts.IsCancellationRequested || downloadTask.IsCompleted)
             {
-                try
-                {
-                    WC.CancelAsync();
-                }
-                catch
-                {
-                    //Don't care
-                }
-                while(File.Exists(Filename))
-                {
-                    try
-                    {
-                        File.Delete(Filename);
-                    }
-                    catch
-                    {
-                        System.Threading.Thread.Sleep(500);
-                    }
-                }
-                //If the download has completed, don't cancel the close event
-                e.Cancel = WC.IsBusy;
+                return;
+            }
+            else if (Tools.AskWarn("Abort the current download?", "Download in progress"))
+            {
+                cts.Cancel();
+            }
+            else
+            {
+                e.Cancel = true;
             }
         }
     }

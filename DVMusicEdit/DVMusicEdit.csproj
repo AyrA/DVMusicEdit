@@ -51,8 +51,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChainLoader.cs" />
     <Compile Include="DerailValley.cs" />
-    <Compile Include="DownloadTask.cs" />
     <Compile Include="Ffmpeg.cs" />
     <Compile Include="frmEntry.cs">
       <SubType>Form</SubType>

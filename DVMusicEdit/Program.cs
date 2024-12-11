@@ -22,6 +22,7 @@ namespace DVMusicEdit
                     .Select(m => Path.Combine(m, "common", DerailValleyFinder.GameName))
                     .FirstOrDefault(m => Directory.Exists(m));
             }
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             if (DV == null)

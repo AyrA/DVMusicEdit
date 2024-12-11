@@ -139,43 +139,18 @@ namespace DVMusicEdit
 
         private bool RequireFfmpeg(bool Silent)
         {
+            const string url = "https://files.ayra.ch/deliver/ffmpeg";
             var allOK = true;
             if (!FFmpeg.IsReady)
             {
-                try
-                {
-                    FFmpeg.BuildDownloadList();
-                }
-                catch (Exception ex)
-                {
-                    if (!Silent)
-                    {
-                        Tools.Error($@"Unable to download ffmpeg.
-If this keeps happening, check that {FFmpeg.HTTP_BASE} is reachable.
-
-Error: " + ex.Message, "FFmpeg download error");
-                    }
-                    return false;
-                }
                 var Tasks = FFmpeg.DownloadLinks.Where(m => m.DownloadRequired).ToArray();
-                if (Tasks.Length > 0)
+                if (!Silent)
                 {
-                    System.IO.Directory.CreateDirectory(FFmpeg.BasePath);
-                    if (!Silent)
-                    {
-                        Tools.Info("This operation needs FFmpeg but it's missing and will be downloaded now.", "FFmpeg required");
-                    }
+                    Tools.Info("This operation needs FFmpeg but it's missing and will be downloaded now.", "FFmpeg required");
                 }
-                foreach (var T in Tasks)
+                using (var f = new frmDownload(new Uri(url)))
                 {
-                    //Stop downloading if a file fails
-                    if (allOK)
-                    {
-                        using (var f = new frmDownload(T.URL, T.Filename))
-                        {
-                            allOK &= f.ShowDialog() == DialogResult.OK;
-                        }
-                    }
+                    allOK &= f.ShowDialog() == DialogResult.OK;
                 }
             }
             return allOK;

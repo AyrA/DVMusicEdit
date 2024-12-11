@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Net;
 using System.Security;
 
 namespace DVMusicEdit
 {
     public static class FFmpeg
     {
-        public const string HTTP_BASE = "https://ayra.ch/ffmpeg/";
-
         /// <summary>
         /// Base path of all ffmpeg executables and libraries
         /// </summary>
@@ -65,38 +61,6 @@ namespace DVMusicEdit
                 return File.Exists(ConverterPath) &&
                     File.Exists(PlayerPath) &&
                     File.Exists(ProbePath);
-            }
-        }
-
-        private static DownloadTask[] _tasks = null;
-
-        /// <summary>
-        /// Gets all download tasks needed to obtain ffmpeg
-        /// </summary>
-        public static DownloadTask[] DownloadLinks
-        {
-            get
-            {
-                if (_tasks == null)
-                {
-                    BuildDownloadList();
-                }
-                return (DownloadTask[])_tasks.Clone();
-            }
-        }
-
-        /// <summary>
-        /// Builds the dynamic download list
-        /// </summary>
-        public static void BuildDownloadList()
-        {
-            if (_tasks == null)
-            {
-                var WC = new WebClient();
-                var Lines = WC.DownloadString(HTTP_BASE).Trim().Split('\n');
-                _tasks = Lines
-                    .Select(m => new DownloadTask(HTTP_BASE + m, Path.Combine(BasePath, m)))
-                    .ToArray();
             }
         }
 
