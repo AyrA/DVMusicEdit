@@ -301,6 +301,19 @@ Do not close this application or you lose your changes.", "Failed to save files"
             }
         }
 
+        private void PlaySelected()
+        {
+            if (lvPlaylist.SelectedItems.Count > 1)
+            {
+                Tools.Info("Only the first selected file will play", "Multiple files selected");
+            }
+            if (RequireFfmpeg(false))
+            {
+                var FullPath = CurrentList.Entries[lvPlaylist.SelectedItems[0].Index].GetFullPath(DV.MusicRootPath);
+                FFmpeg.PlayFileOrStream(FullPath);
+            }
+        }
+
         #region Form event handler
 
         private void LbPlaylists_SelectedIndexChanged(object sender, EventArgs e)
@@ -350,15 +363,7 @@ Do not close this application or you lose your changes.", "Failed to save files"
             {
                 return;
             }
-            if (lvPlaylist.SelectedItems.Count > 1)
-            {
-                Tools.Info("Only the first selected file will play", "Multiple files selected");
-            }
-            if (RequireFfmpeg(false))
-            {
-                var FullPath = CurrentList.Entries[lvPlaylist.SelectedItems[0].Index].GetFullPath(DV.MusicRootPath);
-                FFmpeg.PlayFileOrStream(FullPath);
-            }
+            PlaySelected();
         }
 
         private void BtnEdit_Click(object sender, EventArgs e)
@@ -493,6 +498,13 @@ Do not close this application or you lose your changes.", "Failed to save files"
                     {
                         e.Handled = e.SuppressKeyPress = true;
                         MoveEntriesDown();
+                    }
+                    break;
+                case Keys.P:
+                    if (e.Modifiers == Keys.None)
+                    {
+                        e.Handled = e.SuppressKeyPress = true;
+                        PlaySelected();
                     }
                     break;
                 case Keys.Enter:
