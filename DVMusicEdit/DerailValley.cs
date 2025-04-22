@@ -40,7 +40,14 @@ namespace DVMusicEdit
             {
                 return false;
             }
-            return File.Exists(Path.Combine(MainFolder, "DerailValley.exe"));
+            try
+            {
+                return File.Exists(Path.Combine(MainFolder, "DerailValley.exe"));
+            }
+            catch
+            {
+                return false; //Value resulted in an invalid path string
+            }
         }
 
         /// <summary>

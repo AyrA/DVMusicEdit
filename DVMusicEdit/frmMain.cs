@@ -576,7 +576,7 @@ Error: " + ex.Message, "Cannot delete existing files");
             Tools.Error("This is currently not implemented and will be part of a later version", "Missing feature");
         }
 
-        private void frmMain_Shown(object sender, EventArgs e)
+        private void FrmMain_Shown(object sender, EventArgs e)
         {
             if (DV == null)
             {
