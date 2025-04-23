@@ -24,7 +24,7 @@ namespace DVMusicEdit
         {
             if (!IsDVDirectory(MainFolder))
             {
-                throw new DirectoryNotFoundException($"Not found: {MusicRootPath}");
+                throw new DirectoryNotFoundException($"Not found: {MainFolder}");
             }
             MusicRootPath = Path.Combine(MainFolder, "DerailValley_Data", "StreamingAssets", "music");
             ConvertPath = Path.Combine(MusicRootPath, "converted");

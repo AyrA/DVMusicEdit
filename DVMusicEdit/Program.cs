@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -21,7 +22,7 @@ namespace DVMusicEdit
             }
             catch
             {
-                //NOOP
+                Debug.Print("Failed to find DV via registry key");
             }
             //If not found, scan all steam libraries
             if (string.IsNullOrEmpty(DV))
@@ -30,11 +31,11 @@ namespace DVMusicEdit
                 {
                     DV = DerailValleyFinder.Libraries
                         .Select(m => Path.Combine(m, "common", DerailValleyFinder.GameName))
-                        .FirstOrDefault(m => Directory.Exists(m));
+                        .FirstOrDefault(m => DerailValley.IsDVDirectory(m));
                 }
                 catch
                 {
-                    //NOOP
+                    Debug.Print("Failed to find DV via steam");
                 }
             }
 
@@ -42,7 +43,8 @@ namespace DVMusicEdit
             Application.SetCompatibleTextRenderingDefault(false);
             if (DV == null)
             {
-                Tools.Warn("Could not locate Derail Valley in your registry or steam library. Please select the \"Derail Valley\" folder manually", "Derail Valley not found");
+                Tools.Warn(@"Could not locate Derail Valley in your registry or steam library, or the information about its location in the registry is corrupt.
+Please select the ""Derail Valley"" folder manually", "Derail Valley not found");
             }
             Application.Run(new frmMain(DV));
         }

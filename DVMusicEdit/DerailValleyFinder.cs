@@ -72,6 +72,11 @@ namespace DVMusicEdit
                         if (keyValue.ToLower() == GameName.ToLower())
                         {
                             var location = (string)Software.GetValue("InstallLocation");
+                            if (!DerailValley.IsDVDirectory(location))
+                            {
+                                Debug.Print("Registry Scan: Non compliant DV directory. Found {0} at {1}", keyValue, location);
+                                continue;
+                            }
                             Debug.Print("Registry Scan: Found {0} at {1}", keyValue, location);
                             return location;
                         }
@@ -102,9 +107,13 @@ namespace DVMusicEdit
                                 if (Directory.Exists(installPath))
                                 {
                                     //The main library itself is added too
-                                    //because it's not contained in the configuration file.
+                                    //because it's not always contained in the configuration file.
                                     libs.Add(installPath);
                                     libs.AddRange(GetLibraryConfig(installPath));
+                                }
+                                else
+                                {
+                                    Debug.Print("Steam path is invalid");
                                 }
                             }
                         }

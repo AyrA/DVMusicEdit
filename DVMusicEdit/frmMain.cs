@@ -25,7 +25,7 @@ namespace DVMusicEdit
         public frmMain(string DVRoot)
         {
             InitializeComponent();
-            if (DVRoot != null)
+            if (DerailValley.IsDVDirectory(DVRoot))
             {
                 SelectDV(DVRoot);
             }
