@@ -1,7 +1,7 @@
 ﻿
 namespace DVMusicEdit
 {
-    partial class frmMain
+    partial class FrmMain
     {
         /// <summary>
         /// Required designer variable.
@@ -285,6 +285,7 @@ namespace DVMusicEdit
             this.MinimumSize = new System.Drawing.Size(700, 300);
             this.Name = "frmMain";
             this.Text = "Derail Valley Playlist Manager";
+            this.Load += new System.EventHandler(this.FrmMain_Load);
             this.Shown += new System.EventHandler(this.FrmMain_Shown);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FrmMain_KeyDown);
             this.CmsAdd.ResumeLayout(false);

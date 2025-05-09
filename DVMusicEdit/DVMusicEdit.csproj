@@ -54,6 +54,7 @@
   <ItemGroup>
     <Compile Include="ChainLoader.cs" />
     <Compile Include="DerailValley.cs" />
+    <Compile Include="ExceptionHandler.cs" />
     <Compile Include="Ffmpeg.cs" />
     <Compile Include="frmEntry.cs">
       <SubType>Form</SubType>

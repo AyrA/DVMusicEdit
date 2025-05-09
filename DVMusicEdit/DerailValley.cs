@@ -106,33 +106,33 @@ namespace DVMusicEdit
         /// <summary>
         /// Loads the specified playlist from disk
         /// </summary>
-        /// <param name="Index">Playlist index.</param>
-        private void SetList(int Index)
+        /// <param name="index">Playlist index.</param>
+        private void SetList(int index)
         {
-            var ListFile = GetPlaylistFile(Index);
-            var AltListFile = Path.ChangeExtension(ListFile, ".m3u");
-            if (File.Exists(ListFile))
+            var listFile = GetPlaylistFile(index);
+            var altListFile = Path.ChangeExtension(listFile, ".m3u");
+            if (File.Exists(listFile))
             {
-                Playlists[Index] = Playlist.FromString(File.ReadAllText(ListFile));
+                Playlists[index] = Playlist.FromString(File.ReadAllText(listFile), Path.GetDirectoryName(listFile), true);
             }
-            else if (File.Exists(AltListFile))
+            else if (File.Exists(altListFile))
             {
-                Playlists[Index] = Playlist.FromFileList(File.ReadAllLines(AltListFile).Where(m => !m.StartsWith("#")).ToArray());
+                Playlists[index] = Playlist.FromFileList(File.ReadAllLines(altListFile).Where(m => !m.StartsWith("#")).ToArray());
                 try
                 {
-                    File.WriteAllText(ListFile, Playlists[Index].Serialize());
-                    File.Delete(AltListFile);
+                    File.WriteAllText(listFile, Playlists[index].Serialize());
+                    File.Delete(altListFile);
                 }
                 catch
                 {
-                    Playlists[Index] = new Playlist();
+                    Playlists[index] = new Playlist();
                 }
             }
             else
             {
-                Playlists[Index] = new Playlist();
+                Playlists[index] = new Playlist();
             }
-            Playlists[Index].CreateRelativePaths(ListFile);
+            Playlists[index].CreateRelativePaths(listFile);
         }
 
         /// <summary>
@@ -140,11 +140,10 @@ namespace DVMusicEdit
         /// </summary>
         public void ReloadRadioList()
         {
-            var RadioList = GetPlaylistFile(0);
-
-            if (File.Exists(RadioList))
+            var radioList = GetPlaylistFile(0);
+            if (File.Exists(radioList))
             {
-                Playlists[0] = Playlist.FromString(File.ReadAllText(RadioList));
+                Playlists[0] = Playlist.FromString(File.ReadAllText(radioList), Path.GetDirectoryName(radioList), false);
             }
         }
 
@@ -206,16 +205,16 @@ namespace DVMusicEdit
         /// <summary>
         /// Checks if the given file name is a valid media file
         /// </summary>
-        /// <param name="Filename">File name</param>
+        /// <param name="filename">File name</param>
         /// <returns>true, if valid</returns>
         /// <remarks>This only looks at the file name extension and not the content</remarks>
-        public static bool IsAcceptedMediaType(string Filename)
+        public static bool IsAcceptedMediaType(string filename)
         {
-            if (string.IsNullOrEmpty(Filename))
+            if (string.IsNullOrEmpty(filename))
             {
-                throw new ArgumentNullException(nameof(Filename));
+                return false;
             }
-            return AcceptedExtensions.Contains(Path.GetExtension(Filename.ToLower()));
+            return AcceptedExtensions.Contains(Path.GetExtension(filename.ToLower()));
         }
     }
 }

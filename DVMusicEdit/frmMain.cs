@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
 namespace DVMusicEdit
 {
-    public partial class frmMain : Form
+    public partial class FrmMain : Form
     {
         private enum PlaylistType
         {
@@ -13,6 +14,7 @@ namespace DVMusicEdit
         }
 
         private DerailValley DV;
+        private readonly string initDVRoot;
 
         private Playlist CurrentList
         {
@@ -22,13 +24,10 @@ namespace DVMusicEdit
             }
         }
 
-        public frmMain(string DVRoot)
+        public FrmMain(string DVRoot)
         {
+            initDVRoot = DVRoot;
             InitializeComponent();
-            if (DerailValley.IsDVDirectory(DVRoot))
-            {
-                SelectDV(DVRoot);
-            }
         }
 
         private void SelectDV(string DVRoot)
@@ -41,11 +40,14 @@ namespace DVMusicEdit
         private void InitDV()
         {
             DV.ReloadPlaylists();
-            lbPlaylists.Items.Clear();
-            lbPlaylists.Items.Add("Radio");
-            for (var i = 1; i <= 10; i++)
+            if (DV.Playlists == null)
             {
-                var BaseStr = $"Tape #{i}";
+                throw new Exception("DV.Playlists is unexpectedly null");
+            }
+            lbPlaylists.Items.Clear();
+            for (var i = 0; i <= 10; i++)
+            {
+                var BaseStr = i == 0 ? "Radio" : $"Tape #{i}";
                 if (DV.Playlists[i] == null || DV.Playlists[i].Count == 0)
                 {
                     BaseStr += " (empty)";
@@ -57,6 +59,37 @@ namespace DVMusicEdit
                 lbPlaylists.Items.Add(BaseStr);
             }
             SetEditControls(false);
+            ReportProblems();
+        }
+
+        private void ReportProblems()
+        {
+            var problems = new List<string>();
+
+            for (var i = 0; i < DV.Playlists.Length; i++)
+            {
+                var name = i == 0 ? "Radio" : $"Tape {i:00}";
+                if (DV.Playlists[i].HasProblems)
+                {
+                    var prob = DV.Playlists[i].Problems;
+                    problems.Add($"== Playlist: {name} ==");
+                    problems.AddRange(prob.Take(10));
+                    if (prob.Length > 10)
+                    {
+                        problems.Add($"({prob.Length - 10} more issues)");
+                    }
+                }
+            }
+
+            if (problems.Count > 0)
+            {
+                var summary = string.Join(Environment.NewLine, problems);
+                Tools.Warn(@"At least one playlist has problems or is corrupt.
+Attempts have been made to read as much as possible anyways.
+You can use the 'Save All...' button to overwrite them with the recovered copies.
+Errors reported are as follows:
+" + summary, "Problematic playlists");
+            }
         }
 
         private void SetEditControls(bool enabled)
@@ -90,7 +123,7 @@ namespace DVMusicEdit
                 var NeedTimes = PL.Entries.Any(m => !m.IsValidTime);
                 if (NeedTimes)
                 {
-                    if (!Tools.AskInfo("Some files seem to be missing the runtime. Do you want to automatically scan for them now?", "Missing times"))
+                    if (!Tools.AskInfo("Some files seem to be missing the duration. Do you want to automatically scan for them now?", "Missing times"))
                     {
                         NeedTimes = false;
                     }
@@ -268,6 +301,7 @@ namespace DVMusicEdit
                     {
                         DV.ReloadRadioList();
                     }
+                    ReportProblems();
                     RenderList(CurrentList);
                 }
             }
@@ -578,6 +612,7 @@ Error: " + ex.Message, "Cannot delete existing files");
 
         private void FrmMain_Shown(object sender, EventArgs e)
         {
+
             if (DV == null)
             {
                 string DVRoot = null;
@@ -600,6 +635,14 @@ Error: " + ex.Message, "Cannot delete existing files");
                     }
                 }
                 SelectDV(DVRoot);
+            }
+        }
+
+        private void FrmMain_Load(object sender, EventArgs e)
+        {
+            if (DerailValley.IsDVDirectory(initDVRoot))
+            {
+                SelectDV(initDVRoot);
             }
         }
 

@@ -14,6 +14,7 @@ namespace DVMusicEdit
         [STAThread]
         static void Main()
         {
+            Application.ThreadException += ExceptionHandler.ThreadExceptionHandler;
             string DV = null;
             try
             {
@@ -46,7 +47,7 @@ namespace DVMusicEdit
                 Tools.Warn(@"Could not locate Derail Valley in your registry or steam library, or the information about its location in the registry is corrupt.
 Please select the ""Derail Valley"" folder manually", "Derail Valley not found");
             }
-            Application.Run(new frmMain(DV));
+            Application.Run(new FrmMain(DV));
         }
     }
 }

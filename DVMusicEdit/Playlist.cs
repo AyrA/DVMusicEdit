@@ -2,14 +2,20 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace DVMusicEdit
 {
     public class Playlist
     {
         private readonly List<PlaylistEntry> _entries;
+        private readonly List<string> _problems = new List<string>();
 
-        public PlaylistEntry[] Entries { get => _entries.ToArray(); }
+        public bool HasProblems => _problems.Count > 0;
+
+        public string[] Problems => _problems.ToArray();
+
+        public PlaylistEntry[] Entries => _entries.ToArray();
 
         public int Count
         {
@@ -27,39 +33,43 @@ namespace DVMusicEdit
             _entries = new List<PlaylistEntry>();
         }
 
-        public static Playlist FromString(string RawPlaylist)
+        public static Playlist FromString(string rawPlaylist, string playlistDirectory, bool checkExists)
         {
-            if (RawPlaylist == null)
+            if (rawPlaylist == null)
             {
-                throw new ArgumentNullException(nameof(RawPlaylist));
+                throw new ArgumentNullException(nameof(rawPlaylist));
             }
             Playlist P = new Playlist();
-            var Lines = RawPlaylist.Trim().Split('\n');
-            if (Lines[0].Trim().ToLower() != "[playlist]")
+            var lines = rawPlaylist.Trim().Split('\n');
+            if (lines[0].Trim().ToLower() != "[playlist]")
             {
                 throw new FormatException("This is not a pls style playlist");
             }
             var Parsed = new Dictionary<string, string>();
-            foreach (var L in Lines.Skip(1).Select(m => m.Trim()))
+            foreach (var line in lines.Skip(1).Select(m => m.Trim()))
             {
-                var I = L.IndexOf("=");
-                if (I >= 0)
+                if (string.IsNullOrWhiteSpace(line))
                 {
-                    Parsed[L.Substring(0, I).Trim().ToLower()] = L.Substring(I + 1).Trim();
+                    continue;
                 }
-                else if (L.Length > 0 && L[0] != '#')
+                var index = line.IndexOf("=");
+                if (index > 0)
                 {
-                    throw new FormatException($"Invalid line in playlist: {L}");
+                    Parsed[line.Substring(0, index).Trim().ToLower()] = line.Substring(index + 1).Trim();
+                }
+                else if (line.Length > 0 && !line.TrimStart().StartsWith("#"))
+                {
+                    P._problems.Add($"Skipping over invalid line in playlist: '{line}'");
                 }
             }
-            FillEntries(Parsed, P);
+            FillEntries(Parsed, P, playlistDirectory, checkExists);
             return P;
         }
 
-        public static Playlist FromFileList(string[] MediaFiles)
+        public static Playlist FromFileList(string[] mediaFiles)
         {
             var P = new Playlist();
-            foreach (var s in MediaFiles)
+            foreach (var s in mediaFiles)
             {
                 P._entries.Add(new PlaylistEntry()
                 {
@@ -69,63 +79,73 @@ namespace DVMusicEdit
             return P;
         }
 
-        private static void FillEntries(Dictionary<string, string> Parsed, Playlist P)
+        private static void FillEntries(Dictionary<string, string> parsed, Playlist P, string playlistDirectory, bool checkExists)
         {
-            if (!Parsed.TryGetValue("version", out string v))
+            if (!parsed.TryGetValue("version", out string v))
             {
-                throw new FormatException("Playlist lacks version information");
+                P._problems.Add("Playlist lacks 'Version' field. Trying to read it under the assumption that the field is missing");
             }
             else if (v != "2")
             {
-                throw new FormatException($"Incompatible playlist version. Expected 2, got {v}");
+                P._problems.Add($"Incompatible playlist version. Expected '2', got '{v}'. Trying to read anyways as version 2");
             }
-            int count;
-            if (!Parsed.TryGetValue("numberofentries", out string countTemp))
+
+            var fileIndexes = parsed.Keys
+                //Filter for keys named "File" followed  by digits
+                .Where(m => Regex.IsMatch(m, @"^file\d+$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
+                //Extract the digits
+                .Select(m => int.TryParse(Regex.Match(m, @"\d+$").Value, out int i) ? i : -1)
+                //Keep only entries where extraction was successful
+                .Where(m => m > 0)
+                //Order ascending
+                .OrderBy(m => m)
+                .ToArray();
+
+            foreach (var i in fileIndexes)
             {
-                count = -1;
-                //Guess the count
-                for (var i = 1; count < 0; i++)
-                {
-                    if (!Parsed.ContainsKey($"file{i}"))
-                    {
-                        count = i - 1;
-                    }
-                }
-                //If zero, then a "File1" was not found.
-                if (count == 0)
-                {
-                    //Playlist is empty, don't bother reading further
-                    return;
-                }
-            }
-            else if (!int.TryParse(countTemp, out count) || count < 1)
-            {
-                throw new Exception("NumberOfEntries is not a valid number");
-            }
-            for (var i = 1; i <= count; i++)
-            {
-                Parsed.TryGetValue($"file{i}", out string tempFilename);
-                Parsed.TryGetValue($"length{i}", out string tempLength);
-                Parsed.TryGetValue($"title{i}", out string tempTitle);
+                parsed.TryGetValue($"file{i}", out string tempFilename);
+                parsed.TryGetValue($"length{i}", out string tempLength);
+                parsed.TryGetValue($"title{i}", out string tempTitle);
                 if (string.IsNullOrEmpty(tempFilename))
                 {
-                    throw new FormatException($"File{i} is empty or missing from the playlist");
+                    P._problems.Add($"Entry 'File{i}' is empty or missing from the playlist. Skipping over it");
+                    continue;
+                }
+                if (checkExists)
+                {
+                    try
+                    {
+                        var fullPath = Path.Combine(playlistDirectory, tempFilename);
+                        if (!File.Exists(fullPath))
+                        {
+                            throw new FileNotFoundException();
+                        }
+                    }
+                    catch (FileNotFoundException)
+                    {
+                        P._problems.Add($"Entry 'File{i}': File does not exist");
+                    }
+                    catch (Exception ex)
+                    {
+                        P._problems.Add($"Entry 'File{i}': Unable to check if file exists. {ex.Message}");
+                    }
                 }
                 if (!string.IsNullOrEmpty(tempLength))
                 {
                     if (!double.TryParse(tempLength, out double length))
                     {
-                        throw new FormatException($"Length{i} is present but not a number");
+                        P._problems.Add($"Entry 'Length{i}' is present but not a number. Ignoring it");
+                        length = 0;
                     }
                     if (length < 0)
                     {
-                        throw new FormatException($"Length{i} is present but negative");
+                        P._problems.Add($"Entry 'Length{i}' is present but negative. Ignoring it");
                     }
-                    else if (length > 0)
+                    if (length > 0)
                     {
                         P.AddItem(tempFilename, (int)length, tempTitle);
                     }
-                    else
+                    else //Zero is normal for network streams
                     {
                         P.AddItem(tempFilename, -1, tempTitle);
                     }
